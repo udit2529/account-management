@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var multer = require('multer'),
- dyParser = require('body-parser'),
+ bodyParser = require('body-parser'),
   path = require('path');
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://0.0.0.0:27017/productDB");
