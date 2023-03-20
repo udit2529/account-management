@@ -1,5 +1,4 @@
 {
-  "homepage": "http://udit2529.github.io/account-management",
   "name": "product",
   "version": "0.1.0",
   "private": true,
@@ -20,13 +19,11 @@
     "react-bootstrap-sweetalert": "^5.2.0",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "^5.0.1",
     "sweetalert": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

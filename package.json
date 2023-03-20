@@ -1,8 +1,19 @@
 {
-  "devDependencies": {
-    "gh-pages": "^5.0.0"
+  "name": "my-account",
+  "version": "1.0.0",
+  "description": "Simlple example of user registration, login and CRUD action with backend restAPI using mongoDB, Nodejs(Express.js) and mongoose, authentication using JWT token also pagination and frontend using react.js and material-ui api calling with axios.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "mongoose": "^7.0.2"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udit2529/account-management.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/udit2529/account-management/issues"
+  },
+  "homepage": "https://github.com/udit2529/account-management#readme"
 }

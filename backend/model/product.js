@@ -3,10 +3,10 @@ var Schema = mongoose.Schema;
 
 productSchema = new Schema( {
 	name: String,
-	desc: String,
-	price: Number,
+	gender: String,
+	contact: Number,
 	image: String,
-	discount: Number,
+	age: Number,
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },
 	date : { type : Date, default: Date.now }

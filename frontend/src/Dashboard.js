@@ -17,9 +17,9 @@ export default class Dashboard extends Component {
       openProductEditModal: false,
       id: '',
       name: '',
-      desc: '',
-      price: '',
-      discount: '',
+      gender: '',
+      contact: '',
+      age: '',
       file: '',
       fileName: '',
       page: 1,
@@ -122,9 +122,9 @@ export default class Dashboard extends Component {
     const file = new FormData();
     file.append('file', fileInput.files[0]);
     file.append('name', this.state.name);
-    file.append('desc', this.state.desc);
-    file.append('discount', this.state.discount);
-    file.append('price', this.state.price);
+    file.append('gender', this.state.gender);
+    file.append('age', this.state.age);
+    file.append('contact', this.state.contact);
 
     axios.post('http://localhost:2000/add-product', file, {
       headers: {
@@ -132,15 +132,13 @@ export default class Dashboard extends Component {
         'token': this.state.token
       }
     }).then((res) => {
-
       swal({
         text: res.data.title,
         icon: "success",
         type: "success"
       });
-
       this.handleProductClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', file: null, page: 1 }, () => {
+      this.setState({ name: '', gender: '', age: '', contact: '', file: null, page: 1 }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -160,9 +158,9 @@ export default class Dashboard extends Component {
     file.append('id', this.state.id);
     file.append('file', fileInput.files[0]);
     file.append('name', this.state.name);
-    file.append('desc', this.state.desc);
-    file.append('discount', this.state.discount);
-    file.append('price', this.state.price);
+    file.append('gender', this.state.gender);
+    file.append('age', this.state.age);
+    file.append('contact', this.state.contact);
 
     axios.post('http://localhost:2000/update-product', file, {
       headers: {
@@ -170,7 +168,6 @@ export default class Dashboard extends Component {
         'token': this.state.token
       }
     }).then((res) => {
-
       swal({
         text: res.data.title,
         icon: "success",
@@ -178,7 +175,7 @@ export default class Dashboard extends Component {
       });
 
       this.handleProductEditClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', file: null }, () => {
+      this.setState({ name: '', gender: '', age: '', contact: '', file: null }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -197,9 +194,9 @@ export default class Dashboard extends Component {
       openProductModal: true,
       id: '',
       name: '',
-      desc: '',
-      price: '',
-      discount: '',
+      gender: '',
+      contact: '',
+        age: '',
       fileName: ''
     });
   };
@@ -213,9 +210,9 @@ export default class Dashboard extends Component {
       openProductEditModal: true,
       id: data._id,
       name: data.name,
-      desc: data.desc,
-      price: data.price,
-      discount: data.discount,
+      gender: data.gender,
+      contact: data.contact,
+      age: data.age,
       fileName: data.image
     });
   };
@@ -272,8 +269,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="text"
               autoComplete="off"
-              name="desc"
-              value={this.state.desc}
+              name="gender"
+              value={this.state.gender}
               onChange={this.onChange}
               placeholder="Gender"
               required
@@ -282,8 +279,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="number"
               autoComplete="off"
-              name="price"
-              value={this.state.price}
+              name="contact"
+              value={this.state.contact}
               onChange={this.onChange}
               placeholder="Contact"
               required
@@ -292,8 +289,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="number"
               autoComplete="off"
-              name="discount"
-              value={this.state.discount}
+              name="age"
+              value={this.state.age}
               onChange={this.onChange}
               placeholder="Age"
               required
@@ -322,7 +319,7 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.desc == '' || this.state.discount == '' || this.state.price == ''}
+              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
               Edit Account
             </Button>
@@ -352,8 +349,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="text"
               autoComplete="off"
-              name="desc"
-              value={this.state.desc}
+              name="gender"
+              value={this.state.gender}
               onChange={this.onChange}
               placeholder="Gender"
               required
@@ -362,8 +359,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="number"
               autoComplete="off"
-              name="price"
-              value={this.state.price}
+              name="contact"
+              value={this.state.contact}
               onChange={this.onChange}
               placeholder="Contact"
               required
@@ -372,8 +369,8 @@ export default class Dashboard extends Component {
               id="standard-basic"
               type="number"
               autoComplete="off"
-              name="discount"
-              value={this.state.discount}
+              name="age"
+              value={this.state.age}
               onChange={this.onChange}
               placeholder="Age"
               required
@@ -406,7 +403,7 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.desc == '' || this.state.discount == '' || this.state.price == '' || this.state.file == null}
+              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.file == null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
               Add Account
             </Button>
@@ -444,9 +441,9 @@ export default class Dashboard extends Component {
                     {row.name}
                   </TableCell>
                   <TableCell align="center"><img src={`http://localhost:2000/${row.image}`} width="70" height="70" /></TableCell>
-                  <TableCell align="center">{row.desc}</TableCell>
-                  <TableCell align="center">{row.price}</TableCell>
-                  <TableCell align="center">{row.discount}</TableCell>
+                  <TableCell align="center">{row.gender}</TableCell>
+                  <TableCell align="center">{row.contact}</TableCell>
+                  <TableCell align="center">{row.age}</TableCell>
                   <TableCell align="center">
                     <Button
                       className="button_style"
