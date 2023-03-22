@@ -30,9 +30,10 @@ export default class Login extends React.Component {
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
         swal({
-          text: err.response.data.errorMessage,
+          text: "Invalid User",
           icon: "error",
-          type: "error"
+          type: "error",
+          timer:3000
         });
       }
     });

@@ -3,6 +3,19 @@ import swal from 'sweetalert';
 import { Button, TextField, Link } from '@material-ui/core';
 const axios = require('axios');
 
+function ValidateEmail(inputText)
+{
+var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+if(inputText.match(mailformat))
+{
+return true;
+}
+else
+{
+return false;
+}
+}
+
 export default class Register extends React.Component {
   constructor(props) {
     super(props);
@@ -16,26 +29,41 @@ export default class Register extends React.Component {
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-  register = () => {
+ register = () => {
+let validemail=ValidateEmail(this.state.email)
+if(validemail){
+  axios.post('http://localhost:2000/register', {
+  email: this.state.email,
+  username: this.state.username,
+  password: this.state.password,
+}).then((res) => {
+  swal({
+    text:"User Registered Sucessfully",
+    icon: "success",
+    type: "success",
+    timer:3000
+  });
+  this.props.history.push('/');
+}).catch((err) =>{
+  console.log(err)
+  swal({
+    text:"User does not Exist",
+    icon: "error",
+    type: "error",
+    timer:3000
+  });
+});
+}
+else{
+  swal({
+    text:"Invalid Email",
+    icon: "error",
+    type: "error",
+    timer:3000
+  });
+}
 
-    axios.post('http://localhost:2000/register', {
-      email: this.state.email,
-      username: this.state.username,
-      password: this.state.password,
-    }).then((res) => {
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-      this.props.history.push('/');
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-    });
+    
   }
 
   render() {
@@ -95,7 +123,7 @@ export default class Register extends React.Component {
             variant="contained"
             color="primary"
             size="small"
-            disabled={this.state.username == '' && this.state.password == ''}
+            disabled={this.state.username === '' || this.state.password === ''  || this.state.email === '' || this.state.confirm_password === ''}
             onClick={this.register}
           >
             Register
