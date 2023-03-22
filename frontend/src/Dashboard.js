@@ -59,9 +59,10 @@ export default class Dashboard extends Component {
       this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: "Please add user first",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
       this.setState({ loading: false, products: [], pages: 0 },()=>{});
     });
@@ -78,9 +79,10 @@ export default class Dashboard extends Component {
     }).then((res) => {
 
       swal({
-        text: res.data.title,
+        text: "User deleted",
         icon: "success",
-        type: "success"
+        type: "success",
+        timer:3000
       });
 
       this.setState({ page: 1 }, () => {
@@ -88,9 +90,10 @@ export default class Dashboard extends Component {
       });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: "User is not deleted",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
     });
   }
@@ -135,9 +138,10 @@ export default class Dashboard extends Component {
       }
     }).then((res) => {
       swal({
-        text: res.data.title,
+        text: "User added successfully",
         icon: "success",
-        type: "success"
+        type: "success",
+        timer:3000
       });
       this.handleProductClose();
       this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
@@ -145,9 +149,10 @@ export default class Dashboard extends Component {
       });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: "User is not edited",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
       this.handleProductClose();
     });
@@ -172,9 +177,10 @@ export default class Dashboard extends Component {
       }
     }).then((res) => {
       swal({
-        text: res.data.title,
+        text: "User details edited",
         icon: "success",
-        type: "success"
+        type: "success",
+        timer:3000
       });
 
       this.handleProductEditClose();
@@ -183,9 +189,10 @@ export default class Dashboard extends Component {
       });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text:"User is not edited",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
       this.handleProductEditClose();
     });

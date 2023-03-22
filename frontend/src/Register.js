@@ -69,7 +69,7 @@ export default class Register extends React.Component {
           .catch((err) => {
             console.log(err);
             swal({
-              text: "User already exist",
+              text: "User or email already exist",
               icon: "error",
               type: "error",
               timer: 3000,
