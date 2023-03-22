@@ -11,6 +11,8 @@ mongoose.connect("mongodb://0.0.0.0:27017/productDB");
 var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
+const { check, validationResult } = require('express-validator/check');
+const trimRequest = require('trim-request');
 
 var dir = './uploads';
 var upload = multer({
@@ -114,11 +116,13 @@ app.post("/login", (req, res) => {
 });
 
 /* register api */
-app.post("/register", (req, res) => {
+app.post("/register", trimRequest.body, [
+  check('username').isLength({ min: 1 }).trim().withMessage('User name is required.'),
+],(req, res) => {
   try {
     if (req.body && req.body.username && req.body.password && req.body.email) {
 
-      user.find({ username: req.body.username }, (err, data) => {
+      user.find({ username: req.body.username ,email: req.body.email }, (err, data) => {
 
         if (data.length == 0) {
 
@@ -144,7 +148,8 @@ app.post("/register", (req, res) => {
         } else {
           res.status(400).json({
             errorMessage: `UserName ${req.body.username} Already Exist!`,
-            status: false
+            status: false,
+            message:"user error"
           });
         }
 
