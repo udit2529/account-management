@@ -21,6 +21,15 @@ function ValidateName(inputText) {
   }
 }
 
+function ValidatePassword(inputText) {
+  var passwordformat = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+  if (inputText.match(passwordformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export default class Register extends React.Component {
   constructor(props) {
     super(props);
@@ -37,32 +46,45 @@ export default class Register extends React.Component {
   register = () => {
     let validemail = ValidateEmail(this.state.email);
     let validname = ValidateName(this.state.username);
+    let validpassword = ValidatePassword(this.state.password);
+    // let validconfirm_password = ValidatePassword(this.state.confirm_password)
     if (validemail) {
       if (validname) {
-        axios
-        .post("http://localhost:2000/register", {
-          email: this.state.email,
-          username: this.state.username,
-          password: this.state.password,
-        })
-        .then((res) => {
-          swal({
-            text: "User Registered Sucessfully",
-            icon: "success",
-            type: "success",
-            timer: 3000,
+        if(validpassword ) {
+          axios
+          .post("http://localhost:2000/register", {
+            email: this.state.email,
+            username: this.state.username,
+            password: this.state.password,
+          })
+          .then((res) => {
+            swal({
+              text: "User Registered Sucessfully",
+              icon: "success",
+              type: "success",
+              timer: 3000,
+            });
+            this.props.history.push("/");
+          })
+          .catch((err) => {
+            console.log(err);
+            swal({
+              text: "User already exist",
+              icon: "error",
+              type: "error",
+              timer: 3000,
+            });
           });
-          this.props.history.push("/");
-        })
-        .catch((err) => {
-          console.log(err);
+        }
+        else {
           swal({
-            text: "User already exist",
+            text: "Minimum six characters, at least one letter, one number and one special character",
             icon: "error",
             type: "error",
             timer: 3000,
           });
-        });
+        }
+      
       }
       else{
         swal({
@@ -126,7 +148,7 @@ export default class Register extends React.Component {
           />
           <br />
           <br />
-          <TextField
+          {/* <TextField
             id="standard-basic"
             type="password"
             autoComplete="off"
@@ -135,7 +157,7 @@ export default class Register extends React.Component {
             onChange={this.onChange}
             placeholder="Confirm Password"
             required
-          />
+          /> */}
           <br />
           <br />
           <Button
