@@ -116,9 +116,7 @@ app.post("/login", (req, res) => {
 });
 
 /* register api */
-app.post("/register", trimRequest.body, [
-  check('username').isLength({ min: 1 }).trim().withMessage('User name is required.'),
-],(req, res) => {
+app.post("/register",(req, res) => {
   try {
     if (req.body && req.body.username && req.body.password && req.body.email) {
 
