@@ -5,6 +5,7 @@ productSchema = new Schema( {
 	name: String,
 	gender: String,
 	contact: Number,
+	address: String,
 	image: String,
 	age: Number,
 	user_id: Schema.ObjectId,

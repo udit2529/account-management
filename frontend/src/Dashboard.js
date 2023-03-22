@@ -20,6 +20,7 @@ export default class Dashboard extends Component {
       gender: '',
       contact: '',
       age: '',
+      address: '',
       file: '',
       fileName: '',
       page: 1,
@@ -123,6 +124,7 @@ export default class Dashboard extends Component {
     file.append('file', fileInput.files[0]);
     file.append('name', this.state.name);
     file.append('gender', this.state.gender);
+    file.append('address', this.state.address);
     file.append('age', this.state.age);
     file.append('contact', this.state.contact);
 
@@ -138,7 +140,7 @@ export default class Dashboard extends Component {
         type: "success"
       });
       this.handleProductClose();
-      this.setState({ name: '', gender: '', age: '', contact: '', file: null, page: 1 }, () => {
+      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -159,6 +161,7 @@ export default class Dashboard extends Component {
     file.append('file', fileInput.files[0]);
     file.append('name', this.state.name);
     file.append('gender', this.state.gender);
+    file.append('address', this.state.address);
     file.append('age', this.state.age);
     file.append('contact', this.state.contact);
 
@@ -175,7 +178,7 @@ export default class Dashboard extends Component {
       });
 
       this.handleProductEditClose();
-      this.setState({ name: '', gender: '', age: '', contact: '', file: null }, () => {
+      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -196,7 +199,8 @@ export default class Dashboard extends Component {
       name: '',
       gender: '',
       contact: '',
-        age: '',
+      age: '',
+      address: '',
       fileName: ''
     });
   };
@@ -211,6 +215,7 @@ export default class Dashboard extends Component {
       id: data._id,
       name: data.name,
       gender: data.gender,
+      address: data.address,
       contact: data.contact,
       age: data.age,
       fileName: data.image
@@ -287,6 +292,18 @@ export default class Dashboard extends Component {
             /><br />
             <TextField
               id="standard-basic"
+              type="text"
+              autoComplete="off"
+              name="address"
+              value={this.state.address}
+              onChange={this.onChange}
+              placeholder="Address"
+              multiline
+              row={2}
+              required
+            /><br />
+            <TextField
+              id="standard-basic"
               type="number"
               autoComplete="off"
               name="age"
@@ -306,7 +323,7 @@ export default class Dashboard extends Component {
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
-                id="fileInput"
+                id = "fileInput"
                 placeholder="File"
                 hidden
               />
@@ -319,7 +336,7 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == ''}
+              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
               Edit Account
             </Button>
@@ -365,6 +382,18 @@ export default class Dashboard extends Component {
               placeholder="Contact"
               required
             /><br />
+             <TextField
+              id="standard-basic"
+              type="text"
+              autoComplete="off"
+              name="address"
+              value={this.state.address}
+              onChange={this.onChange}
+              placeholder="Address"
+              multiline
+              row={2}
+              required
+            /><br />
             <TextField
               id="standard-basic"
               type="number"
@@ -383,9 +412,6 @@ export default class Dashboard extends Component {
                 id="standard-basic"
                 type="file"
                 accept="image/*"
-                // inputProps={{
-                //   accept: "image/*"
-                // }}
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
@@ -403,7 +429,7 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.file == null}
+              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == '' || this.state.file == null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
               Add Account
             </Button>
@@ -431,6 +457,7 @@ export default class Dashboard extends Component {
                 <TableCell align="center">Gender</TableCell>
                 <TableCell align="center">Contact</TableCell>
                 <TableCell align="center">Age</TableCell>
+                <TableCell align="center">Address</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
@@ -444,6 +471,7 @@ export default class Dashboard extends Component {
                   <TableCell align="center">{row.gender}</TableCell>
                   <TableCell align="center">{row.contact}</TableCell>
                   <TableCell align="center">{row.age}</TableCell>
+                  <TableCell align="center">{row.address}</TableCell>
                   <TableCell align="center">
                     <Button
                       className="button_style"
