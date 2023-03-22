@@ -126,7 +126,7 @@ app.post("/register", trimRequest.body, [
 
         if (data.length == 0) {
 
-          let User = new user({
+           let User = new user({
             username: req.body.username,
             password: req.body.password,
             email: req.body.email
