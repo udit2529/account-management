@@ -120,10 +120,8 @@ app.post("/register",(req, res) => {
   try {
     if (req.body && req.body.username && req.body.password && req.body.email) {
 
-      user.find({ username: req.body.username ,email: req.body.email }, (err, data) => {
-
+      user.find({ email: req.body.email }, (err, data) => {
         if (data.length == 0) {
-
            let User = new user({
             username: req.body.username,
             password: req.body.password,
