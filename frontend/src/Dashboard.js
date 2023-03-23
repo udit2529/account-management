@@ -8,6 +8,45 @@ import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
 const axios = require('axios');
 
+function ValidateName(inputText) {
+  var nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
+  if (inputText.match(nameformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function ValidateAge(inputText) {
+  var ageformat = /^\d{2}$/;
+  if (inputText.match(ageformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// function ValidateContact(inputText) {
+//   var contactformat = /^[0-9]*{,10}$/;
+//   if (inputText.match(contactformat)) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+function ValidateContact(inputText)
+{
+  var contactformat = /^\d{10}$/;
+  if(inputText.match(contactformat))
+        {
+      return true;
+        }
+      else
+        {
+        return false;
+        }
+}
 export default class Dashboard extends Component {
   constructor() {
     super();
@@ -131,32 +170,62 @@ export default class Dashboard extends Component {
     file.append('age', this.state.age);
     file.append('contact', this.state.contact);
 
-    axios.post('http://localhost:2000/add-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
+    let validage = ValidateAge(this.state.age);
+    let validname = ValidateName(this.state.name);
+    let validcontact = ValidateContact(this.state.contact);
+    if (validname) {
+      if (validcontact) {
+        if (validage) {
+          axios.post('http://localhost:2000/add-product', file, {
+            headers: {
+              'content-type': 'multipart/form-data',
+              'token': this.state.token
+            }
+          }).then((res) => {
+            swal({
+              text: "User added sucessfully",
+              icon: "success",
+              type: "success",
+              timer:3000
+            });
+            this.handleProductClose();
+            this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
+              this.getProduct();
+            });
+          }).catch((err) => {
+            swal({
+              text: "Please enter pameters properly",
+              icon: "error",
+              type: "error",
+              timer:3000
+            });
+            this.handleProductClose();
+          });
+        } else{
+          swal({
+            text: "Age is not valid (Must be 2 Digit)",
+            icon: "error",
+            type: "error",
+            timer:3000
+          });
+        }
+      } else {
+        swal({
+          text: "Number is not valid (Must be 10 Digit)",
+          icon: "error",
+          type: "error",
+          timer:3000
+        });
+  
       }
-    }).then((res) => {
+    } else {
       swal({
-        text: "User added successfully",
-        icon: "success",
-        type: "success",
-        timer:3000
-      });
-      this.handleProductClose();
-      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: "User is not edited",
+        text: "Name is not valid",
         icon: "error",
         type: "error",
         timer:3000
       });
-      this.handleProductClose();
-    });
-
+    }
   }
 
   updateProduct = () => {

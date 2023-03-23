@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var multer = require('multer'),
-  bodyParser = require('body-parser'),
-  path = require('path');
+bodyParser = require('body-parser'),
+path = require('path');
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://0.0.0.0:27017/productDB");
 var fs = require('fs');
@@ -40,7 +40,7 @@ app.use(cors());
 app.use(express.static('uploads'));
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: false
+extended: false
 }));
 
 app.use("/", (req, res, next) => {
@@ -186,12 +186,13 @@ function checkUserAndGenerateToken(data, req, res) {
 app.post("/add-product", upload.any(), (req, res) => {
   try {
     if (req.files && req.body && req.body.name && req.body.gender && req.body.contact &&
-      req.body.age) {
+      req.body.age && req.body.address) {
 
       let new_product = new product();
       new_product.name = req.body.name;
       new_product.gender = req.body.gender;
       new_product.contact = req.body.contact;
+      new_product. address = req.body.address;
       new_product.image = req.files[0].filename;
       new_product.age = req.body.age;
       new_product.user_id = req.user.id;
@@ -227,7 +228,7 @@ app.post("/add-product", upload.any(), (req, res) => {
 app.post("/update-product", upload.any(), (req, res) => {
   try {
     if (req.files && req.body && req.body.name && req.body.gender && req.body.contact &&
-      req.body.id && req.body.age) {
+      req.body.id && req.body.age&& req.body.address) {
 
       product.findById(req.body.id, (err, new_product) => {
 
@@ -251,6 +252,9 @@ app.post("/update-product", upload.any(), (req, res) => {
         }
         if (req.body.age) {
           new_product.age = req.body.age;
+        }
+        if(req.body.address){
+          new_product.address = req.body.address;
         }
 
         new_product.save((err, data) => {
@@ -330,7 +334,7 @@ app.get("/get-product", (req, res) => {
     }
     var perPage = 5;
     var page = req.query.page || 1;
-    product.find(query, { date: 1, name: 1, id: 1,gender: 1, contact: 1, age: 1, image: 1 })
+    product.find(query, { date: 1, name: 1, id: 1,gender: 1,address:1, contact: 1, age: 1, image: 1 })
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
         product.find(query).count()

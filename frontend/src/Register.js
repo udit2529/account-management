@@ -13,7 +13,7 @@ function ValidateEmail(inputText) {
 }
 
 function ValidateName(inputText) {
-  var Nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
+  var Nameformat = /[^A-Za-z0-9]{3,29}$/;
   if (inputText.match(Nameformat)) {
     return true;
   } else {
