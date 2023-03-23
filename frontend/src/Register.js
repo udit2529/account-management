@@ -168,8 +168,8 @@ export default class Register extends React.Component {
             disabled={
               this.state.username === "" ||
               this.state.password === "" ||
-              this.state.email === "" ||
-              this.state.confirm_password === ""
+              this.state.email === "" 
+              //this.state.confirm_password === ""
             }
             onClick={this.register}
           >
