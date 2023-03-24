@@ -13,10 +13,22 @@ function ValidateEmail(inputText) {
 }
 
 function ValidateName(inputText) {
-  var Nameformat = /[^A-Za-z0-9]{3,29}$/;
-  if (inputText.match(Nameformat)) {
+
+  if (!inputText) {
+    console.log("1"+inputText);
+    return false;
+  } else if (inputText.includes(" ")) {
+    console.log("2"+inputText);
+    return false;
+  }
+
+ let Nameformat = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  console.log(!Nameformat.test(inputText))
+  if (!Nameformat.test(inputText) &&  inputText.length>=4) {
+    console.log("3"+inputText);
     return true;
   } else {
+    console.log("4"+inputText);
     return false;
   }
 }
