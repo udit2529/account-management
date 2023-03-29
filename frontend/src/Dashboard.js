@@ -22,46 +22,6 @@ import { Pagination } from "@material-ui/lab";
 import swal from "sweetalert";
 const axios = require("axios");
 
-function ValidateName(inputText) {
-  var nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
-  if (inputText.match(nameformat)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function ValidateAge(inputText) {
-  var ageformat = /^\d{2}$/;
-  if (inputText.match(ageformat)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// function ValidateContact(inputText) {
-//   var contactformat = /^[0-9]*{,10}$/;
-//   if (inputText.match(contactformat)) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
-function ValidateContact(inputText)
-{
-  var contactformat = /^\d{10}$/;
-  if(inputText.match(contactformat))
-        {
-      return true;
-        }
-      else
-        {
-        return false;
-        }
-}
-
 export default class Dashboard extends Component {
   constructor() {
     super();
@@ -69,16 +29,6 @@ export default class Dashboard extends Component {
       token: "",
       openProductModal: false,
       openProductEditModal: false,
-<<<<<<< HEAD
-      id: '',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      file: '',
-      fileName: '',
-=======
       id: "",
       name: "",
       gender: "",
@@ -86,7 +36,6 @@ export default class Dashboard extends Component {
       age: "",
       file: "",
       fileName: "",
->>>>>>> master
       page: 1,
       search: "",
       products: [],
@@ -197,75 +146,6 @@ export default class Dashboard extends Component {
   addProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-<<<<<<< HEAD
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
-
-    let validage = ValidateAge(this.state.age);
-    let validname = ValidateName(this.state.name);
-    let validcontact = ValidateContact(this.state.contact);
-    if (validname) {
-      if (validcontact) {
-        if (validage) {
-          axios.post('http://localhost:2000/add-product', file, {
-            headers: {
-              'content-type': 'multipart/form-data',
-              'token': this.state.token
-            }
-          }).then((res) => {
-            swal({
-              text: res.data.title,
-              icon: "success",
-              type: "success"
-            });
-            this.handleProductClose();
-            this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
-              this.getProduct();
-            });
-          }).catch((err) => {
-            swal({
-              text: err.response.data.errorMessage,
-              icon: "error",
-              type: "error"
-            });
-            this.handleProductClose();
-          });
-        } else{
-          swal({
-            text: "Age is not valid (Must be 2 Digit)",
-            icon: "error",
-            type: "error",
-            timer:3000
-          });
-        }
-      } else {
-        swal({
-          text: "Number is not valid (Must be 10 Digit)",
-          icon: "error",
-          type: "error",
-          timer:3000
-        });
-  
-      }
-    } else {
-      swal({
-        text: "Name is not valid",
-        icon: "error",
-        type: "error",
-        timer:3000
-      });
-    }
-   
-    
-
- 
-
-  }
-=======
     file.append("file", fileInput.files[0]);
     file.append("name", this.state.name);
     file.append("gender", this.state.gender);
@@ -302,27 +182,16 @@ export default class Dashboard extends Component {
         this.handleProductClose();
       });
   };
->>>>>>> master
 
   updateProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-<<<<<<< HEAD
-    file.append('id', this.state.id);
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
-=======
     file.append("id", this.state.id);
     file.append("file", fileInput.files[0]);
     file.append("name", this.state.name);
     file.append("gender", this.state.gender);
     file.append("age", this.state.age);
     file.append("contact", this.state.contact);
->>>>>>> master
 
     axios
       .post("http://localhost:2000/update-product", file, {
@@ -338,11 +207,6 @@ export default class Dashboard extends Component {
           type: "success",
         });
 
-<<<<<<< HEAD
-      this.handleProductEditClose();
-      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null }, () => {
-        this.getProduct();
-=======
         this.handleProductEditClose();
         this.setState(
           { name: "", gender: "", age: "", contact: "", file: null },
@@ -358,29 +222,18 @@ export default class Dashboard extends Component {
           type: "error",
         });
         this.handleProductEditClose();
->>>>>>> master
       });
   };
 
   handleProductOpen = () => {
     this.setState({
       openProductModal: true,
-<<<<<<< HEAD
-      id: '',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      fileName: ''
-=======
       id: "",
       name: "",
       gender: "",
       contact: "",
       age: "",
       fileName: "",
->>>>>>> master
     });
   };
 
@@ -394,7 +247,6 @@ export default class Dashboard extends Component {
       id: data._id,
       name: data.name,
       gender: data.gender,
-      address: data.address,
       contact: data.contact,
       age: data.age,
       fileName: data.image,
@@ -502,23 +354,7 @@ export default class Dashboard extends Component {
             <DialogTitle>Date of birth</DialogTitle>
             <TextField
               id="standard-basic"
-<<<<<<< HEAD
-              type="text"
-              autoComplete="off"
-              name="address"
-              value={this.state.address}
-              onChange={this.onChange}
-              placeholder="Address"
-              multiline
-              row={2}
-              required
-            /><br />
-            <TextField
-              id="standard-basic"
-              type="number"
-=======
               type="date"
->>>>>>> master
               autoComplete="off"
               name="age"
               value={this.state.age}
@@ -539,7 +375,7 @@ export default class Dashboard extends Component {
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
-                id = "fileInput"
+                id="fileInput"
                 placeholder="File"
                 hidden
               />
@@ -553,10 +389,6 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-<<<<<<< HEAD
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == ''}
-              onClick={(e) => this.updateProduct()} color="primary" autoFocus>
-=======
               disabled={
                 this.state.name == "" ||
                 this.state.gender == "" ||
@@ -567,7 +399,6 @@ export default class Dashboard extends Component {
               color="primary"
               autoFocus
             >
->>>>>>> master
               Edit Account
             </Button>
           </DialogActions>
@@ -640,25 +471,9 @@ export default class Dashboard extends Component {
               placeholder="Contact"
               fullWidth
               required
-<<<<<<< HEAD
-            /><br />
-             <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="address"
-              value={this.state.address}
-              onChange={this.onChange}
-              placeholder="Address"
-              multiline
-              row={2}
-              required
-            /><br />
-=======
             />
             <br />
             <DialogTitle>Date of birth</DialogTitle>
->>>>>>> master
             <TextField
               id="standard-basic"
               type="date"
@@ -679,6 +494,9 @@ export default class Dashboard extends Component {
                 id="standard-basic"
                 type="file"
                 accept="image/*"
+                // inputProps={{
+                //   accept: "image/*"
+                // }}
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
@@ -697,10 +515,6 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-<<<<<<< HEAD
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == '' || this.state.file == null}
-              onClick={(e) => this.addProduct()} color="primary" autoFocus>
-=======
               disabled={
                 this.state.name == "" ||
                 this.state.gender == "" ||
@@ -712,7 +526,6 @@ export default class Dashboard extends Component {
               color="primary"
               autoFocus
             >
->>>>>>> master
               Add Account
             </Button>
           </DialogActions>
@@ -738,12 +551,7 @@ export default class Dashboard extends Component {
                 <TableCell align="center">Image</TableCell>
                 <TableCell align="center">Gender</TableCell>
                 <TableCell align="center">Contact</TableCell>
-<<<<<<< HEAD
-                <TableCell align="center">Age</TableCell>
-                <TableCell align="center">Address</TableCell>
-=======
                 <TableCell align="center">DOB</TableCell>
->>>>>>> master
                 <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
@@ -763,7 +571,6 @@ export default class Dashboard extends Component {
                   <TableCell align="center">{row.gender}</TableCell>
                   <TableCell align="center">{row.contact}</TableCell>
                   <TableCell align="center">{row.age}</TableCell>
-                  <TableCell align="center">{row.address}</TableCell>
                   <TableCell align="center">
                     <Button
                       className="button_style"
