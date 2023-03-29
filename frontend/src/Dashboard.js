@@ -1,116 +1,142 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
-  Button, TextField, Dialog, DialogActions, LinearProgress,
-  DialogTitle, DialogContent, TableBody, Table,
-  TableContainer, TableHead, TableRow, TableCell
-} from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
-import swal from 'sweetalert';
-const axios = require('axios');
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  LinearProgress,
+  DialogTitle,
+  DialogContent,
+  TableBody,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  InputLabel,
+} from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
+import swal from "sweetalert";
+const axios = require("axios");
 
 export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      token: '',
+      token: "",
       openProductModal: false,
       openProductEditModal: false,
-      id: '',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      file: '',
-      fileName: '',
+      id: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      file: "",
+      fileName: "",
       page: 1,
-      search: '',
+      search: "",
       products: [],
       pages: 0,
-      loading: false
+      loading: false,
     };
   }
 
   componentDidMount = () => {
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push('/login');
+      this.props.history.push("/login");
     } else {
       this.setState({ token: token }, () => {
         this.getProduct();
       });
     }
-  }
+  };
 
   getProduct = () => {
-    
     this.setState({ loading: true });
 
-    let data = '?';
+    let data = "?";
     data = `${data}page=${this.state.page}`;
     if (this.state.search) {
       data = `${data}&search=${this.state.search}`;
     }
-    axios.get(`http://localhost:2000/get-product${data}`, {
-      headers: {
-        'token': this.state.token
-      }
-    }).then((res) => {
-      this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
+    axios
+      .get(`http://localhost:2000/get-product${data}`, {
+        headers: {
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        this.setState({
+          loading: false,
+          products: res.data.products,
+          pages: res.data.pages,
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error",
+        });
+        this.setState({ loading: false, products: [], pages: 0 }, () => {});
       });
-      this.setState({ loading: false, products: [], pages: 0 },()=>{});
-    });
-  }
+  };
 
   deleteProduct = (id) => {
-    axios.post('http://localhost:2000/delete-product', {
-      id: id
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'token': this.state.token
-      }
-    }).then((res) => {
+    axios
+      .post(
+        "http://localhost:2000/delete-product",
+        {
+          id: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: this.state.token,
+          },
+        }
+      )
+      .then((res) => {
+        swal({
+          text: res.data.title,
+          icon: "success",
+          type: "success",
+        });
 
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
+        this.setState({ page: 1 }, () => {
+          this.pageChange(null, 1);
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error",
+        });
       });
-
-      this.setState({ page: 1 }, () => {
-        this.pageChange(null, 1);
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-    });
-  }
+  };
 
   pageChange = (e, page) => {
     this.setState({ page: page }, () => {
       this.getProduct();
     });
-  }
+  };
 
   logOut = () => {
-    localStorage.setItem('token', null);
-    this.props.history.push('/');
-  }
+    localStorage.setItem("token", null);
+    this.props.history.push("/");
+  };
 
   onChange = (e) => {
     if (e.target.files && e.target.files[0] && e.target.files[0].name) {
-      this.setState({ fileName: e.target.files[0].name }, () => { });
+      this.setState({ fileName: e.target.files[0].name }, () => {});
     }
-    this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name == 'search') {
+    this.setState({ [e.target.name]: e.target.value }, () => {});
+    if (e.target.name == "search") {
       this.setState({ page: 1 }, () => {
         this.getProduct();
       });
@@ -120,84 +146,94 @@ export default class Dashboard extends Component {
   addProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("file", fileInput.files[0]);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
-    axios.post('http://localhost:2000/add-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
+    axios
+      .post("http://localhost:2000/add-product", file, {
+        headers: {
+          "content-type": "multipart/form-data",
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        swal({
+          text: res.data.title,
+          icon: "success",
+          type: "success",
+        });
+        this.handleProductClose();
+        this.setState(
+          { name: "", gender: "", age: "", contact: "", file: null, page: 1 },
+          () => {
+            this.getProduct();
+          }
+        );
+      })
+      .catch((err) => {
+        swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error",
+        });
+        this.handleProductClose();
       });
-      this.handleProductClose();
-      this.setState({ name: '', gender: '', age: '', contact: '', file: null, page: 1 }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.handleProductClose();
-    });
-
-  }
+  };
 
   updateProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('id', this.state.id);
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("id", this.state.id);
+    file.append("file", fileInput.files[0]);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
-    axios.post('http://localhost:2000/update-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
+    axios
+      .post("http://localhost:2000/update-product", file, {
+        headers: {
+          "content-type": "multipart/form-data",
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        swal({
+          text: res.data.title,
+          icon: "success",
+          type: "success",
+        });
 
-      this.handleProductEditClose();
-      this.setState({ name: '', gender: '', age: '', contact: '', file: null }, () => {
-        this.getProduct();
+        this.handleProductEditClose();
+        this.setState(
+          { name: "", gender: "", age: "", contact: "", file: null },
+          () => {
+            this.getProduct();
+          }
+        );
+      })
+      .catch((err) => {
+        swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error",
+        });
+        this.handleProductEditClose();
       });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.handleProductEditClose();
-    });
-
-  }
+  };
 
   handleProductOpen = () => {
     this.setState({
       openProductModal: true,
-      id: '',
-      name: '',
-      gender: '',
-      contact: '',
-        age: '',
-      fileName: ''
+      id: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      fileName: "",
     });
   };
 
@@ -213,7 +249,7 @@ export default class Dashboard extends Component {
       gender: data.gender,
       contact: data.contact,
       age: data.age,
-      fileName: data.image
+      fileName: data.image,
     });
   };
 
@@ -234,7 +270,7 @@ export default class Dashboard extends Component {
             size="small"
             onClick={this.handleProductOpen}
           >
-            Add Account 
+            Add Account
           </Button>
           <Button
             className="button_style"
@@ -252,9 +288,12 @@ export default class Dashboard extends Component {
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth
+          maxWidth="sm"
         >
           <DialogTitle id="alert-dialog-title">Edit Account</DialogTitle>
           <DialogContent>
+          <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -262,10 +301,32 @@ export default class Dashboard extends Component {
               name="name"
               value={this.state.name}
               onChange={this.onChange}
-              placeholder="Product Name"
+              placeholder="Name"
               required
-            /><br />
-            <TextField
+              fullWidth
+            />
+            <br />
+            <DialogTitle>Gender</DialogTitle>
+            <RadioGroup
+              aria-label="gender"
+              name="gender"
+              value={this.state.gender}
+              onChange={this.onChange}
+              row
+            >
+              <FormControlLabel
+                value="Female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="Other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+            {/* <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -274,7 +335,10 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Gender"
               required
-            /><br />
+              fullWidth
+            /> */}
+            <br />
+            <DialogTitle>Contact</DialogTitle>
             <TextField
               id="standard-basic"
               type="number"
@@ -284,22 +348,27 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Contact"
               required
-            /><br />
+              fullWidth
+            />
+            <br />
+            <DialogTitle>Date of birth</DialogTitle>
             <TextField
               id="standard-basic"
-              type="number"
+              type="date"
               autoComplete="off"
               name="age"
               value={this.state.age}
               onChange={this.onChange}
-              placeholder="Age"
+              placeholder="Date of birth"
               required
-            /><br /><br />
-            <Button
-              variant="contained"
-              component="label"
-            > Upload
-            <input
+              fullWidth
+            />
+            <br />
+            <br />
+            <Button variant="contained" component="label">
+              {" "}
+              Upload Photo
+              <input
                 id="standard-basic"
                 type="file"
                 accept="image/*"
@@ -310,7 +379,8 @@ export default class Dashboard extends Component {
                 placeholder="File"
                 hidden
               />
-            </Button>&nbsp;
+            </Button>
+            &nbsp;
             {this.state.fileName}
           </DialogContent>
 
@@ -319,8 +389,16 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == ''}
-              onClick={(e) => this.updateProduct()} color="primary" autoFocus>
+              disabled={
+                this.state.name == "" ||
+                this.state.gender == "" ||
+                this.state.age == "" ||
+                this.state.contact == ""
+              }
+              onClick={(e) => this.updateProduct()}
+              color="primary"
+              autoFocus
+            >
               Edit Account
             </Button>
           </DialogActions>
@@ -332,9 +410,12 @@ export default class Dashboard extends Component {
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth
+          maxWidth="sm"
         >
           <DialogTitle id="alert-dialog-title">Add Account</DialogTitle>
           <DialogContent>
+            <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -343,9 +424,31 @@ export default class Dashboard extends Component {
               value={this.state.name}
               onChange={this.onChange}
               placeholder="Name"
+              fullWidth
               required
-            /><br />
-            <TextField
+            />
+            <br />
+            <DialogTitle>Gender</DialogTitle>
+            <RadioGroup
+              aria-label="gender"
+              name="gender"
+              value={this.state.gender}
+              onChange={this.onChange}
+              row
+            >
+              <FormControlLabel
+                value="Female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="Other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+            {/* <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -353,8 +456,11 @@ export default class Dashboard extends Component {
               value={this.state.gender}
               onChange={this.onChange}
               placeholder="Gender"
+              fullWidth
               required
-            /><br />
+            /> */}
+            <br />
+            <DialogTitle>Contact</DialogTitle>
             <TextField
               id="standard-basic"
               type="number"
@@ -363,23 +469,28 @@ export default class Dashboard extends Component {
               value={this.state.contact}
               onChange={this.onChange}
               placeholder="Contact"
+              fullWidth
               required
-            /><br />
+            />
+            <br />
+            <DialogTitle>Date of birth</DialogTitle>
             <TextField
               id="standard-basic"
-              type="number"
+              type="date"
               autoComplete="off"
               name="age"
               value={this.state.age}
               onChange={this.onChange}
               placeholder="Age"
+              fullWidth
               required
-            /><br /><br />
-            <Button
-              variant="contained"
-              component="label"
-            > Upload
-            <input
+            />
+            <br />
+            <br />
+            <Button variant="contained" component="label">
+              {" "}
+              Upload Photo
+              <input
                 id="standard-basic"
                 type="file"
                 accept="image/*"
@@ -394,7 +505,8 @@ export default class Dashboard extends Component {
                 hidden
                 required
               />
-            </Button>&nbsp;
+            </Button>
+            &nbsp;
             {this.state.fileName}
           </DialogContent>
 
@@ -403,8 +515,17 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.file == null}
-              onClick={(e) => this.addProduct()} color="primary" autoFocus>
+              disabled={
+                this.state.name == "" ||
+                this.state.gender == "" ||
+                this.state.age == "" ||
+                this.state.contact == "" ||
+                this.state.file == null
+              }
+              onClick={(e) => this.addProduct()}
+              color="primary"
+              autoFocus
+            >
               Add Account
             </Button>
           </DialogActions>
@@ -430,7 +551,7 @@ export default class Dashboard extends Component {
                 <TableCell align="center">Image</TableCell>
                 <TableCell align="center">Gender</TableCell>
                 <TableCell align="center">Contact</TableCell>
-                <TableCell align="center">Age</TableCell>
+                <TableCell align="center">DOB</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
@@ -440,7 +561,13 @@ export default class Dashboard extends Component {
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell align="center"><img src={`http://localhost:2000/${row.image}`} width="70" height="70" /></TableCell>
+                  <TableCell align="center">
+                    <img
+                      src={`http://localhost:2000/${row.image}`}
+                      width="70"
+                      height="70"
+                    />
+                  </TableCell>
                   <TableCell align="center">{row.gender}</TableCell>
                   <TableCell align="center">{row.contact}</TableCell>
                   <TableCell align="center">{row.age}</TableCell>
@@ -453,7 +580,7 @@ export default class Dashboard extends Component {
                       onClick={(e) => this.handleProductEditOpen(row)}
                     >
                       Edit
-                  </Button>
+                    </Button>
                     <Button
                       className="button_style"
                       variant="outlined"
@@ -462,16 +589,20 @@ export default class Dashboard extends Component {
                       onClick={(e) => this.deleteProduct(row._id)}
                     >
                       Delete
-                  </Button>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <br />
-          <Pagination count={this.state.pages} page={this.state.page} onChange={this.pageChange} color="primary" />
+          <Pagination
+            count={this.state.pages}
+            page={this.state.page}
+            onChange={this.pageChange}
+            color="primary"
+          />
         </TableContainer>
-
       </div>
     );
   }
