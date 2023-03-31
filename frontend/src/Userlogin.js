@@ -1,35 +1,40 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
-import './logi.css';
+import "./logi.css";
+import UserDashboard from "./UserDashboard";
 const axios = require("axios");
-const bcrypt = require("bcryptjs");
-var salt = bcrypt.genSaltSync(10);
 
 
-export default class Login extends React.Component {
+
+export default class UserLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: "",
+      empId: "",
+      contact: "",
     };
   }
 
-  onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+  onChange = (e) => this.setState({ 
+    [e.target.name]: e.target.value 
+   
+  },
+  console.log(e.target.value)
+  );
 
-  login = () => {
-    const pwd = bcrypt.hashSync(this.state.password, salt);
-
+  userLogin = () => {
+    // console.log(this.state.empId,this.state.contact);
     axios
-      .post("http://localhost:2000/login", {
-        email: this.state.email,
-        password: pwd,
+      .get("http://localhost:2000/userLogin", {
+        empId: this.state.empId,
+        contact: this.state.contact,
       })
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user_id", res.data.id);
-        this.props.history.push("/dashboard");
+        console.log("fornt");
+        console.log(res);
+        this.props.history.push("/userdashboard");
+        // <UserDashboard />
       })
       .catch((err) => {
         if (
@@ -38,7 +43,7 @@ export default class Login extends React.Component {
           err.response.data.errorMessage
         ) {
           swal({
-            text: "Invalid Email",
+            text: "Invalid Employee ID",
             icon: "error",
             type: "error",
             timer: 3000,
@@ -51,7 +56,7 @@ export default class Login extends React.Component {
     return (
       <div style={{ marginTop: "200px" }}>
         <div>
-          <h2> Admin Login</h2>
+          <h2> User Login</h2>
         </div>
 
         <div>
@@ -59,22 +64,22 @@ export default class Login extends React.Component {
             id="standard-basic"
             type="text"
             autoComplete="off"
-            name="email"
-            value={this.state.email}
+            name="empId"
+            value={this.state.empId}
             onChange={this.onChange}
-            placeholder="Email"
+            placeholder="Employee Id"
             required
           />
           <br />
           <br />
           <TextField
             id="standard-basic"
-            type="password"
+            type="contact"
             autoComplete="off"
-            name="password"
-            value={this.state.password}
+            name="contact"
+            value={this.state.contact}
             onChange={this.onChange}
-            placeholder="Password"
+            placeholder="Contact"
             required
           />
           <br />
@@ -86,18 +91,17 @@ export default class Login extends React.Component {
                 variant="contained"
                 color="primary"
                 size="small"
-                disabled={this.state.email == "" && this.state.password == ""}
-                onClick={this.login}
+                disabled={this.state.empId == "" && this.state.contact == ""}
+                onClick={this.userLogin}
               >
                 Login
               </Button>
             </div>
             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
             {/* <br></br> */}
-            <div className="reg">
+            {/* <div className="reg">
               <Link href="/register">Register</Link>
-            </div>
-          
+            </div> */}
           </div>
         </div>
       </div>

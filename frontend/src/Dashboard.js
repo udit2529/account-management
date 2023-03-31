@@ -69,6 +69,7 @@ export default class Dashboard extends Component {
       openProductModal: false,
       openProductEditModal: false,
       id: '',
+      empId:'',
       name: '',
       gender: '',
       contact: '',
@@ -178,6 +179,7 @@ export default class Dashboard extends Component {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
     file.append('file', fileInput.files[0]);
+    file.append('empId', this.state.empId);
     file.append('name', this.state.name);
     file.append('gender', this.state.gender);
     file.append('address', this.state.address);
@@ -202,7 +204,7 @@ export default class Dashboard extends Component {
               timer:3000
             });
             this.handleProductClose();
-            this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
+            this.setState({ name: '',empId:'', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
               this.getProduct();
             });
           }).catch((err) => {
@@ -278,6 +280,7 @@ export default class Dashboard extends Component {
     this.setState({
       openProductModal: true,
       id: '',
+      empId:'',
       name: '',
       gender: '',
       contact: '',
@@ -344,6 +347,8 @@ export default class Dashboard extends Component {
         >
           <DialogTitle id="alert-dialog-title">Edit Account</DialogTitle>
           <DialogContent>
+
+            
           <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
@@ -356,6 +361,8 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
+           
+            
             <br />
             <DialogTitle>Gender</DialogTitle>
             <RadioGroup
@@ -491,6 +498,19 @@ export default class Dashboard extends Component {
               required
             />
             <br />
+            <DialogTitle>Empolyee Id</DialogTitle>
+            <TextField
+              id="standard-basic"
+              type="number"
+              autoComplete="off"
+              name="empId"
+              value={this.state.empId}
+              onChange={this.onChange}
+              placeholder="Empolyee Id"
+              required
+              fullWidth
+            />
+             <br />
             <DialogTitle>Gender</DialogTitle>
             <RadioGroup
               aria-label="gender"
@@ -561,7 +581,7 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
-           
+          
             <br />
             <br />
             <Button variant="contained" component="label">
@@ -597,6 +617,8 @@ export default class Dashboard extends Component {
                 this.state.gender == "" ||
                 this.state.age == "" ||
                 this.state.contact == "" ||
+                this.state.address == "" ||
+                this.state.empId == "" ||
                 this.state.file == null
               }
               onClick={(e) => this.addProduct()}
@@ -627,6 +649,7 @@ export default class Dashboard extends Component {
               <TableRow>
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Image</TableCell>
+                <TableCell align="center">Empolyee Id</TableCell>
                 <TableCell align="center">Gender</TableCell>
                 <TableCell align="center">Contact</TableCell>
                 <TableCell align="center">DOB</TableCell>
@@ -647,6 +670,7 @@ export default class Dashboard extends Component {
                       height="70"
                     />
                   </TableCell>
+                  <TableCell align="center">{row.empId}</TableCell>
                   <TableCell align="center">{row.gender}</TableCell>
                   <TableCell align="center">{row.contact}</TableCell>
                   <TableCell align="center">{row.age}</TableCell>

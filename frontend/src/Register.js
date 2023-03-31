@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
+
+
 const axios = require("axios");
 
 function ValidateEmail(inputText) {
@@ -48,8 +50,8 @@ export default class Register extends React.Component {
     this.state = {
       email: "",
       username: "",
-      password: "",
-      confirm_password: "",
+      password: ""
+      // confirm_password: "",
     };
   }
 
@@ -76,7 +78,7 @@ export default class Register extends React.Component {
               type: "success",
               timer: 3000,
             });
-            this.props.history.push("/");
+            this.props.history.push("/log");
           })
           .catch((err) => {
             console.log(err);
@@ -125,7 +127,8 @@ export default class Register extends React.Component {
         </div>
 
         <div>
-          <TextField
+       
+        <TextField
             id="standard-basic"
             type="text"
             autoComplete="off"
@@ -135,6 +138,8 @@ export default class Register extends React.Component {
             placeholder="Email"
             required
           />
+       
+          
           <br /> <br />
           <TextField
             id="standard-basic"
@@ -188,8 +193,8 @@ export default class Register extends React.Component {
           >
             Register
           </Button>{" "}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Link href="/">Login</Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link href="/log">Login</Link>
         </div>
       </div>
     );
