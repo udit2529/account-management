@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 productSchema = new Schema( {
+	empId:Number,
 	name: String,
 	gender: String,
 	contact: Number,
