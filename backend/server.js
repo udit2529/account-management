@@ -166,14 +166,14 @@ app.post("/userLogin", async (req, res) => {
   console.log(req.body);
     try {
       const id = req.body.empId;
-      console.log(id);
+      //console.log(id);
       const prod = await product.findOne({ empId: id });
-      console.log(JSON.stringify(prod));
+      console.log(prod.contact);
       if (!prod) {
         res.status(400).json({ success: false, message: "Not Found" });
       } else {
         const contact = req.body.contact;
-        if (contact !== prod.contact) {
+        if (contact != prod.contact) {
           res
             .status(400)
             .json({ success: false, message: "invalid credentials" });

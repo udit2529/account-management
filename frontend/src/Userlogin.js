@@ -26,7 +26,7 @@ export default class UserLogin extends React.Component {
   userLogin = () => {
     // console.log(this.state.empId,this.state.contact);
     axios
-      .get("http://localhost:2000/userLogin", {
+      .post("http://localhost:2000/userLogin", {
         empId: this.state.empId,
         contact: this.state.contact,
       })
