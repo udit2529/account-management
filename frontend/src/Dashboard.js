@@ -1,13 +1,66 @@
 import React, { Component } from 'react';
 import {
-  Button, TextField, Dialog, DialogActions, LinearProgress,
-  DialogTitle, DialogContent, TableBody, Table,
-  TableContainer, TableHead, TableRow, TableCell
-} from '@material-ui/core';
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  LinearProgress,
+  DialogTitle,
+  DialogContent,
+  TableBody,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  InputLabel,
+} from "@material-ui/core";
 import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
 const axios = require('axios');
 
+function ValidateName(inputText) {
+  var nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
+  if (inputText.match(nameformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function ValidateAge(inputText) {
+  var ageformat = /^\d{2}$/;
+  if (inputText.match(ageformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// function ValidateContact(inputText) {
+//   var contactformat = /^[0-9]*{,10}$/;
+//   if (inputText.match(contactformat)) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+function ValidateContact(inputText)
+{
+  var contactformat = /^\d{10}$/;
+  if(inputText.match(contactformat))
+        {
+      return true;
+        }
+      else
+        {
+        return false;
+        }
+}
 export default class Dashboard extends Component {
   constructor() {
     super();
@@ -16,6 +69,7 @@ export default class Dashboard extends Component {
       openProductModal: false,
       openProductEditModal: false,
       id: '',
+      empId:'',
       name: '',
       gender: '',
       contact: '',
@@ -56,12 +110,15 @@ export default class Dashboard extends Component {
         'token': this.state.token
       }
     }).then((res) => {
-      this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
+      this.setState({ loading: false, 
+        products: res.data.products.sort((a,b)=> a.name.localeCompare(b.name)),
+         pages: res.data.pages });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: "Please add user first",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
       this.setState({ loading: false, products: [], pages: 0 },()=>{});
     });
@@ -78,9 +135,10 @@ export default class Dashboard extends Component {
     }).then((res) => {
 
       swal({
-        text: res.data.title,
+        text: "User deleted",
         icon: "success",
-        type: "success"
+        type: "success",
+        timer:3000
       });
 
       this.setState({ page: 1 }, () => {
@@ -88,9 +146,10 @@ export default class Dashboard extends Component {
       });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text: "User is not deleted",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
     });
   }
@@ -122,36 +181,61 @@ export default class Dashboard extends Component {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
     file.append('file', fileInput.files[0]);
+    file.append('empId', this.state.empId);
     file.append('name', this.state.name);
     file.append('gender', this.state.gender);
     file.append('address', this.state.address);
     file.append('age', this.state.age);
     file.append('contact', this.state.contact);
 
-    axios.post('http://localhost:2000/add-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
+    let validname = ValidateName(this.state.name);
+    let validcontact = ValidateContact(this.state.contact);
+    if (validname) {
+      if (validcontact) {
+        
+          axios.post('http://localhost:2000/add-product', file, {
+            headers: {
+              'content-type': 'multipart/form-data',
+              'token': this.state.token
+            }
+          }).then((res) => {
+            swal({
+              text: "User added sucessfully",
+              icon: "success",
+              type: "success",
+              timer:3000
+            });
+            this.handleProductClose();
+            this.setState({ name: '',empId:'', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
+              this.getProduct();
+            });
+          }).catch((err) => {
+            console.log(err);
+            swal({
+              text: "Please enter pameters properly",
+              icon: "error",
+              type: "error",
+              timer:3000
+            });
+            this.handleProductClose();
+          });
+      } else {
+        swal({
+          text: "Number is not valid (Must be 10 Digit)",
+          icon: "error",
+          type: "error",
+          timer:3000
+        });
+  
       }
-    }).then((res) => {
+    } else {
       swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-      this.handleProductClose();
-      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
+        text: "Name is not valid",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
-      this.handleProductClose();
-    });
-
+    }
   }
 
   updateProduct = () => {
@@ -172,9 +256,10 @@ export default class Dashboard extends Component {
       }
     }).then((res) => {
       swal({
-        text: res.data.title,
+        text: "User details edited",
         icon: "success",
-        type: "success"
+        type: "success",
+        timer:3000
       });
 
       this.handleProductEditClose();
@@ -183,9 +268,10 @@ export default class Dashboard extends Component {
       });
     }).catch((err) => {
       swal({
-        text: err.response.data.errorMessage,
+        text:"User is not edited",
         icon: "error",
-        type: "error"
+        type: "error",
+        timer:3000
       });
       this.handleProductEditClose();
     });
@@ -196,6 +282,7 @@ export default class Dashboard extends Component {
     this.setState({
       openProductModal: true,
       id: '',
+      empId:'',
       name: '',
       gender: '',
       contact: '',
@@ -257,9 +344,14 @@ export default class Dashboard extends Component {
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth
+          maxWidth="sm"
         >
           <DialogTitle id="alert-dialog-title">Edit Account</DialogTitle>
           <DialogContent>
+
+            
+          <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -267,10 +359,34 @@ export default class Dashboard extends Component {
               name="name"
               value={this.state.name}
               onChange={this.onChange}
-              placeholder="Product Name"
+              placeholder="Name"
               required
-            /><br />
-            <TextField
+              fullWidth
+            />
+           
+            
+            <br />
+            <DialogTitle>Gender</DialogTitle>
+            <RadioGroup
+              aria-label="gender"
+              name="gender"
+              value={this.state.gender}
+              onChange={this.onChange}
+              row
+            >
+              <FormControlLabel
+                value="Female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="Other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+            {/* <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -279,7 +395,10 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Gender"
               required
-            /><br />
+              fullWidth
+            /> */}
+            <br />
+            <DialogTitle>Contact</DialogTitle>
             <TextField
               id="standard-basic"
               type="number"
@@ -289,7 +408,22 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Contact"
               required
-            /><br />
+              fullWidth
+            />
+            <br />
+            <DialogTitle>Date of birth</DialogTitle>
+            <TextField
+              id="standard-basic"
+              type="date"
+              autoComplete="off"
+              name="age"
+              value={this.state.age}
+              onChange={this.onChange}
+              placeholder="Date of birth"
+              required
+              fullWidth
+            />
+             <DialogTitle>Address</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -298,36 +432,27 @@ export default class Dashboard extends Component {
               value={this.state.address}
               onChange={this.onChange}
               placeholder="Address"
-              multiline
-              row={2}
               required
-            /><br />
-            <TextField
-              id="standard-basic"
-              type="number"
-              autoComplete="off"
-              name="age"
-              value={this.state.age}
-              onChange={this.onChange}
-              placeholder="Age"
-              required
-            /><br /><br />
-            <Button
-              variant="contained"
-              component="label"
-            > Upload
-            <input
+              fullWidth
+            />
+            <br />
+            <br />
+            <Button variant="contained" component="label">
+              {" "}
+              Upload Photo
+              <input
                 id="standard-basic"
                 type="file"
                 accept="image/*"
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
-                id = "fileInput"
+                id="fileInput"
                 placeholder="File"
                 hidden
               />
-            </Button>&nbsp;
+            </Button>
+            &nbsp;
             {this.state.fileName}
           </DialogContent>
 
@@ -336,8 +461,16 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == ''}
-              onClick={(e) => this.updateProduct()} color="primary" autoFocus>
+              disabled={
+                this.state.name == "" ||
+                this.state.gender == "" ||
+                this.state.age == "" ||
+                this.state.contact == ""
+              }
+              onClick={(e) => this.updateProduct()}
+              color="primary"
+              autoFocus
+            >
               Edit Account
             </Button>
           </DialogActions>
@@ -349,9 +482,12 @@ export default class Dashboard extends Component {
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth
+          maxWidth="sm"
         >
-          <DialogTitle id="alert-dialog-title">Add Account</DialogTitle>
+          <DialogTitle id="alert-dialog-title" variant='h2'>Add Account</DialogTitle>
           <DialogContent>
+            <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -360,9 +496,44 @@ export default class Dashboard extends Component {
               value={this.state.name}
               onChange={this.onChange}
               placeholder="Name"
+              fullWidth
               required
-            /><br />
+            />
+            <br />
+            <DialogTitle>Empolyee Id</DialogTitle>
             <TextField
+              id="standard-basic"
+              type="number"
+              autoComplete="off"
+              name="empId"
+              value={this.state.empId}
+              onChange={this.onChange}
+              placeholder="Empolyee Id"
+              required
+              fullWidth
+            />
+             <br />
+            <DialogTitle>Gender</DialogTitle>
+            <RadioGroup
+              aria-label="gender"
+              name="gender"
+              value={this.state.gender}
+              onChange={this.onChange}
+              row
+            >
+              <FormControlLabel
+                value="Female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="Other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+            {/* <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -370,8 +541,11 @@ export default class Dashboard extends Component {
               value={this.state.gender}
               onChange={this.onChange}
               placeholder="Gender"
+              fullWidth
               required
-            /><br />
+            /> */}
+            <br />
+            <DialogTitle>Contact</DialogTitle>
             <TextField
               id="standard-basic"
               type="number"
@@ -380,9 +554,25 @@ export default class Dashboard extends Component {
               value={this.state.contact}
               onChange={this.onChange}
               placeholder="Contact"
+              fullWidth
               required
-            /><br />
-             <TextField
+            />
+            <br />
+            <DialogTitle>Date of birth</DialogTitle>
+            <TextField
+              id="standard-basic"
+              type="date"
+              autoComplete="off"
+              name="age"
+              value={this.state.age}
+              onChange={this.onChange}
+              placeholder="Age"
+              fullWidth
+              required
+            />
+             <br />
+             <DialogTitle>Address</DialogTitle>
+              <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -390,28 +580,22 @@ export default class Dashboard extends Component {
               value={this.state.address}
               onChange={this.onChange}
               placeholder="Address"
-              multiline
-              row={2}
               required
-            /><br />
-            <TextField
-              id="standard-basic"
-              type="number"
-              autoComplete="off"
-              name="age"
-              value={this.state.age}
-              onChange={this.onChange}
-              placeholder="Age"
-              required
-            /><br /><br />
-            <Button
-              variant="contained"
-              component="label"
-            > Upload
-            <input
+              fullWidth
+            />
+          
+            <br />
+            <br />
+            <Button variant="contained" component="label">
+              {" "}
+              Upload Photo
+              <input
                 id="standard-basic"
                 type="file"
                 accept="image/*"
+                // inputProps={{
+                //   accept: "image/*"
+                // }}
                 name="file"
                 value={this.state.file}
                 onChange={this.onChange}
@@ -420,7 +604,8 @@ export default class Dashboard extends Component {
                 hidden
                 required
               />
-            </Button>&nbsp;
+            </Button>
+            &nbsp;
             {this.state.fileName}
           </DialogContent>
 
@@ -429,12 +614,24 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.gender == '' || this.state.age == '' || this.state.contact == '' || this.state.address == '' || this.state.file == null}
-              onClick={(e) => this.addProduct()} color="primary" autoFocus>
+              disabled={
+                this.state.name == "" ||
+                this.state.gender == "" ||
+                this.state.age == "" ||
+                this.state.contact == "" ||
+                this.state.address == "" ||
+                this.state.empId == "" ||
+                this.state.file == null
+              }
+              onClick={(e) => this.addProduct()}
+              color="primary"
+              autoFocus
+            >
               Add Account
             </Button>
           </DialogActions>
         </Dialog>
+
 
         <br />
 
@@ -454,9 +651,10 @@ export default class Dashboard extends Component {
               <TableRow>
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Image</TableCell>
+                <TableCell align="center">Empolyee Id</TableCell>
                 <TableCell align="center">Gender</TableCell>
                 <TableCell align="center">Contact</TableCell>
-                <TableCell align="center">Age</TableCell>
+                <TableCell align="center">DOB</TableCell>
                 <TableCell align="center">Address</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableRow>
@@ -467,7 +665,14 @@ export default class Dashboard extends Component {
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell align="center"><img src={`http://localhost:2000/${row.image}`} width="70" height="70" /></TableCell>
+                  <TableCell align="center">
+                    <img
+                      src={`http://localhost:2000/${row.image}`}
+                      width="70"
+                      height="70"
+                    />
+                  </TableCell>
+                  <TableCell align="center">{row.empId}</TableCell>
                   <TableCell align="center">{row.gender}</TableCell>
                   <TableCell align="center">{row.contact}</TableCell>
                   <TableCell align="center">{row.age}</TableCell>
@@ -481,7 +686,7 @@ export default class Dashboard extends Component {
                       onClick={(e) => this.handleProductEditOpen(row)}
                     >
                       Edit
-                  </Button>
+                    </Button>
                     <Button
                       className="button_style"
                       variant="outlined"
@@ -490,16 +695,20 @@ export default class Dashboard extends Component {
                       onClick={(e) => this.deleteProduct(row._id)}
                     >
                       Delete
-                  </Button>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <br />
-          <Pagination count={this.state.pages} page={this.state.page} onChange={this.pageChange} color="primary" />
+          <Pagination
+            count={this.state.pages}
+            page={this.state.page}
+            onChange={this.pageChange}
+            color="primary"
+          />
         </TableContainer>
-
       </div>
     );
   }
