@@ -19,7 +19,7 @@ ReactDOM.render(
             
             <Route exact path='/' component={CheckPage} />
             <Route exact path='/log' component={Login} />
-            <Route exact path='/register' component={Register} />
+            {/* //<Route exact path='/register' component={Register} /> */}
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/userlogin' component={UserLogin} />
             <Route exact path='/userdashboard' component={UserDashboard} />

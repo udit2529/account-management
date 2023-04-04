@@ -4,3 +4,15 @@
 .reg{
     margin:.5rem
 }
+.passwordInputField{
+    width: 20rem;
+    margin: auto;
+    display: none;
+    /* visibility: hidden; */
+}
+.passwordBox{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}

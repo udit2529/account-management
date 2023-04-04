@@ -31,10 +31,13 @@ export default class UserLogin extends React.Component {
         contact: this.state.contact,
       })
       .then((res) => {
-        console.log("fornt");
-        console.log(res);
-        this.props.history.push("/userdashboard");
-        // <UserDashboard />
+        const [name,empId,gender, contact,address,image,age ] = res;
+       // console.log("fornt");
+         //console.log(res,"hello")
+        //  console.log(res); 
+         //console.log(res)
+        //  this.props.history.push("/userdashboard ");
+        <UserDashboard name={name} empId={empId} gender={gender} contact={contact} address={address} image={image} age={age}/>
       })
       .catch((err) => {
         if (

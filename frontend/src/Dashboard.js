@@ -110,7 +110,9 @@ export default class Dashboard extends Component {
         'token': this.state.token
       }
     }).then((res) => {
-      this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
+      this.setState({ loading: false, 
+        products: res.data.products.sort((a,b)=> a.name.localeCompare(b.name)),
+         pages: res.data.pages });
     }).catch((err) => {
       swal({
         text: "Please add user first",

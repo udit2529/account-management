@@ -1,21 +1,25 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
-import './logi.css';
+import Alert from "@material-ui/lab/Alert";
+import "./logi.css";
+import Input from "@material-ui/core/Input/Input";
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
-
 
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
+      email: "",
       password: "",
     };
   }
-
+  showPassowordHint = (e) => {
+    document.getElementsByClassName("passwordInputField")[0].style.display =
+      "block";
+  };
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
   login = () => {
@@ -67,17 +71,34 @@ export default class Login extends React.Component {
           />
           <br />
           <br />
-          <TextField
+          <Input
             id="standard-basic"
             type="password"
             autoComplete="off"
             name="password"
+            onFocus={this.showPassowordHint}
             value={this.state.password}
             onChange={this.onChange}
             placeholder="Password"
             required
           />
+
           <br />
+          <br />
+          <div className="passwordInputField">
+            <Alert severity="info">
+              Minimum 6 words password :
+              <ul className="passwordBox">
+                <li>Uppercase letters: A-Z</li>
+                <li>Lowercase letters: a-z</li>
+                <li>Special Character : !@#$%^&*</li>
+                <li>Numbers: 0-9</li>
+              </ul>
+            </Alert>
+          </div>
+
+          <br />
+          <div className="passwordInputField"></div>
           <br />
           <div className="space2">
             <div className="reg">
@@ -94,10 +115,9 @@ export default class Login extends React.Component {
             </div>
             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
             {/* <br></br> */}
-            <div className="reg">
+            {/* <div className="reg">
               <Link href="/register">Register</Link>
-            </div>
-          
+            </div> */}
           </div>
         </div>
       </div>

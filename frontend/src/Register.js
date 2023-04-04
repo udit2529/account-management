@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 
-
+//import { Alert } from 'antd';
+import Password from "./Password";
 const axios = require("axios");
 
 function ValidateEmail(inputText) {
@@ -26,7 +27,7 @@ function ValidateName(inputText) {
 
  let Nameformat = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   console.log(!Nameformat.test(inputText))
-  if (!Nameformat.test(inputText) &&  inputText.length>=4) {
+  if (!Nameformat.test(inputText) &&  inputText.length>=1) {
     console.log("3"+inputText);
     return true;
   } else {
@@ -122,6 +123,9 @@ export default class Register extends React.Component {
   render() {
     return (
       <div style={{ marginTop: "200px" }}>
+        {/* <div style={{display:"flex", justifyContent:"center"}}><Alert severity="info">Use email : superadmin@sabil.com / password : sabil@1234/ User Name : sabil </Alert></div> */}
+        
+        {/* //<Alert message="This is a Info Alert" type="info" /> */}
         <div>
           <h2>Register</h2>
         </div>
@@ -165,6 +169,8 @@ export default class Register extends React.Component {
           />
           <br />
           <br />
+          
+
           {/* <TextField
             id="standard-basic"
             type="password"
@@ -175,9 +181,10 @@ export default class Register extends React.Component {
             placeholder="Confirm Password"
             required
           /> */}
-          <br />
+ 
           <br />
           <Button
+          
             className="button_style"
             variant="contained"
             color="primary"

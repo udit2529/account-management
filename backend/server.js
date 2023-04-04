@@ -163,12 +163,12 @@ app.post("/login", (req, res) => {
 
 //userLogin api
 app.post("/userLogin", async (req, res) => {
-  console.log(req.body);
+  console.log(req.body.empId);
     try {
       const id = req.body.empId;
       //console.log(id);
       const prod = await product.findOne({ empId: id });
-      console.log(prod.contact);
+      //console.log(prod.contact);
       if (!prod) {
         res.status(400).json({ success: false, message: "Not Found" });
       } else {
@@ -178,6 +178,7 @@ app.post("/userLogin", async (req, res) => {
             .status(400)
             .json({ success: false, message: "invalid credentials" });
         } else {
+          console.log(prod,"aaaaaaaa");
           res.status(200).json({ success: true, data: prod });
         }    
       }

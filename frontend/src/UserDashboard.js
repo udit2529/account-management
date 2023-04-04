@@ -10,10 +10,10 @@ const address = 'titira uchahuwan azamgarh up'
 
 
 export default class UserDashboard extends Component {
-   
+  
 
   render() {
-    
+    console.log(this.props.name);
     return (
       <div>
         <div className="userprofile">
