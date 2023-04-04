@@ -10,6 +10,7 @@ import UserLogin from './Userlogin';
 import './Login.css';
 import CheckPage from './CheckPage';
 import UserDashboard from './UserDashboard';
+import AdminDash from './AdminDash';
 
 
 ReactDOM.render(
@@ -23,7 +24,9 @@ ReactDOM.render(
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/userlogin' component={UserLogin} />
             <Route exact path='/userdashboard' component={UserDashboard} />
-                </Switch>
+            <Route exact path="/admindash" component={AdminDash}/>
+             
+        </Switch>
     </BrowserRouter>,
     document.getElementById('root')
 );

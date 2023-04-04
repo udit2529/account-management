@@ -163,7 +163,7 @@ app.post("/login", (req, res) => {
 
 //userLogin api
 app.post("/userLogin", async (req, res) => {
-  console.log(req.body.empId);
+  // console.log(req.body.empId);
     try {
       const id = req.body.empId;
       //console.log(id);
@@ -179,7 +179,7 @@ app.post("/userLogin", async (req, res) => {
             .json({ success: false, message: "invalid credentials" });
         } else {
           console.log(prod,"aaaaaaaa");
-          res.status(200).json({ success: true, data: prod });
+          res.status(200).json(prod);
         }    
       }
     } catch (error)
@@ -187,6 +187,7 @@ app.post("/userLogin", async (req, res) => {
       res.status(500).send("Internal Server Error")
     }
 });
+
     // if (req.body && req.body.empId && req.body.contact) {
     //   product.findOne({ empId: req.body.empId }, (err, data) => {
     //     if (data.length > 0) {

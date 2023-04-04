@@ -3,9 +3,9 @@ import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
 import "./logi.css";
 import UserDashboard from "./UserDashboard";
+import { NavLink } from "react-router-dom";
+
 const axios = require("axios");
-
-
 
 export default class UserLogin extends React.Component {
   constructor(props) {
@@ -13,31 +13,43 @@ export default class UserLogin extends React.Component {
     this.state = {
       empId: "",
       contact: "",
+      details: [],
     };
   }
 
-  onChange = (e) => this.setState({ 
-    [e.target.name]: e.target.value 
-   
-  },
-  console.log(e.target.value)
-  );
+  onChange = (e) =>
+    this.setState(
+      {
+        [e.target.name]: e.target.value,
+      },
+      console.log(e.target.value)
+    );
 
-  userLogin = () => {
+  usercall = (data) => {
+    console.log(data);
+  };
+
+  userLogin = async () => {
     // console.log(this.state.empId,this.state.contact);
-    axios
+    await axios
       .post("http://localhost:2000/userLogin", {
         empId: this.state.empId,
         contact: this.state.contact,
       })
       .then((res) => {
-        const [name,empId,gender, contact,address,image,age ] = res;
-       // console.log("fornt");
-         //console.log(res,"hello")
-        //  console.log(res); 
-         //console.log(res)
-        //  this.props.history.push("/userdashboard ");
-        <UserDashboard name={name} empId={empId} gender={gender} contact={contact} address={address} image={image} age={age}/>
+        this.setState({
+          details: res.data.data,
+        });
+
+        this.props.history.push({
+          pathname: "/userdashboard",
+          state: {
+            data: this.state.details,
+          },
+        });
+        //  this.usercall(this.state.details);
+
+        // <UserDashboard name={name} empId={empId} gender={gender} contact={contact} address={address} image={image} age={age}/>
       })
       .catch((err) => {
         if (
@@ -99,12 +111,42 @@ export default class UserLogin extends React.Component {
               >
                 Login
               </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button
+                className="button_style"
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                <NavLink
+                to="/"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Home
+              </NavLink>
+              </Button>
             </div>
             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
             {/* <br></br> */}
             {/* <div className="reg">
               <Link href="/register">Register</Link>
             </div> */}
+
+            {/* <Button
+              className="button_style"
+              variant="contained"
+              color="primary"
+              size="small"
+              disabled={this.state.empId == "" && this.state.contact == ""}
+              // onClick={this.homepage}
+            >
+              <NavLink
+                to="/"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Home
+              </NavLink>
+            </Button> */}
           </div>
         </div>
       </div>

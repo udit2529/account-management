@@ -15,8 +15,7 @@ const divStyle = {
 export default class CheckPage extends Component {
   render() {
     return (
-      <div className='startingPage'style={divStyle
-      }>
+      <div className='startingPage'style={divStyle}>
         
          <Button
             className="button_style"

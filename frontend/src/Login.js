@@ -4,6 +4,7 @@ import { Button, TextField, Link } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import "./logi.css";
 import Input from "@material-ui/core/Input/Input";
+import { NavLink } from "react-router-dom";
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
@@ -111,6 +112,20 @@ export default class Login extends React.Component {
                 onClick={this.login}
               >
                 Login
+              </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button
+                className="button_style"
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                <NavLink
+                to="/"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Home
+              </NavLink>
               </Button>
             </div>
             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
