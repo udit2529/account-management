@@ -1,0 +1,11 @@
+.menu{ 
+    display: flex;
+    justify-content: space-between;
+    background-color: blue;
+    height: 4rem;
+}
+.menulink{
+    color:white;
+    line-height: 4rem;
+    margin: 0 3rem ;
+}

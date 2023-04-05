@@ -11,6 +11,8 @@ import './Login.css';
 import CheckPage from './CheckPage';
 import UserDashboard from './UserDashboard';
 import AdminDash from './AdminDash';
+import Menubar from './Menubar';
+import AddAccount from './AddAccount';
 
 
 ReactDOM.render(
@@ -24,7 +26,8 @@ ReactDOM.render(
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/userlogin' component={UserLogin} />
             <Route exact path='/userdashboard' component={UserDashboard} />
-            <Route exact path="/admindash" component={AdminDash}/>
+            <Route  path='/menu' component={Menubar} />
+            <Route path="/addaccount" component={AddAccount} />
              
         </Switch>
     </BrowserRouter>,

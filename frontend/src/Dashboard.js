@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Button,
   TextField,
@@ -18,9 +18,9 @@ import {
   FormControlLabel,
   InputLabel,
 } from "@material-ui/core";
-import { Pagination } from '@material-ui/lab';
-import swal from 'sweetalert';
-const axios = require('axios');
+import { Pagination } from "@material-ui/lab";
+import swal from "sweetalert";
+const axios = require("axios");
 
 function ValidateName(inputText) {
   var nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
@@ -49,128 +49,136 @@ function ValidateAge(inputText) {
 //   }
 // }
 
-function ValidateContact(inputText)
-{
+function ValidateContact(inputText) {
   var contactformat = /^\d{10}$/;
-  if(inputText.match(contactformat))
-        {
-      return true;
-        }
-      else
-        {
-        return false;
-        }
+  if (inputText.match(contactformat)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      token: '',
+      token: "",
       openProductModal: false,
       openProductEditModal: false,
-      id: '',
-      empId:'',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      file: '',
-      fileName: '',
+      id: "",
+      empId: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      address: "",
+      file: "",
+      fileName: "",
       page: 1,
-      search: '',
+      search: "",
       products: [],
       pages: 0,
-      loading: false
+      loading: false,
     };
   }
 
   componentDidMount = () => {
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push('/login');
+      this.props.history.push("/login");
     } else {
       this.setState({ token: token }, () => {
         this.getProduct();
       });
     }
-  }
+  };
 
   getProduct = () => {
-    
     this.setState({ loading: true });
 
-    let data = '?';
+    let data = "?";
     data = `${data}page=${this.state.page}`;
     if (this.state.search) {
       data = `${data}&search=${this.state.search}`;
     }
-    axios.get(`http://localhost:2000/get-product${data}`, {
-      headers: {
-        'token': this.state.token
-      }
-    }).then((res) => {
-      this.setState({ loading: false, 
-        products: res.data.products.sort((a,b)=> a.name.localeCompare(b.name)),
-         pages: res.data.pages });
-    }).catch((err) => {
-      swal({
-        text: "Please add user first",
-        icon: "error",
-        type: "error",
-        timer:3000
+    axios
+      .get(`http://localhost:2000/get-product${data}`, {
+        headers: {
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        this.setState({
+          loading: false,
+          products: res.data.products.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          ),
+          pages: res.data.pages,
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: "Please add user first",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
+        this.setState({ loading: false, products: [], pages: 0 }, () => {});
       });
-      this.setState({ loading: false, products: [], pages: 0 },()=>{});
-    });
-  }
+  };
 
   deleteProduct = (id) => {
-    axios.post('http://localhost:2000/delete-product', {
-      id: id
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'token': this.state.token
-      }
-    }).then((res) => {
+    axios
+      .post(
+        "http://localhost:2000/delete-product",
+        {
+          id: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: this.state.token,
+          },
+        }
+      )
+      .then((res) => {
+        swal({
+          text: "User deleted",
+          icon: "success",
+          type: "success",
+          timer: 3000,
+        });
 
-      swal({
-        text: "User deleted",
-        icon: "success",
-        type: "success",
-        timer:3000
+        this.setState({ page: 1 }, () => {
+          this.pageChange(null, 1);
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: "User is not deleted",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
       });
-
-      this.setState({ page: 1 }, () => {
-        this.pageChange(null, 1);
-      });
-    }).catch((err) => {
-      swal({
-        text: "User is not deleted",
-        icon: "error",
-        type: "error",
-        timer:3000
-      });
-    });
-  }
+  };
 
   pageChange = (e, page) => {
     this.setState({ page: page }, () => {
       this.getProduct();
     });
-  }
+  };
 
   logOut = () => {
-    localStorage.setItem('token', null);
-    this.props.history.push('/');
-  }
+    localStorage.setItem("token", null);
+    this.props.history.push("/");
+  };
 
   onChange = (e) => {
     if (e.target.files && e.target.files[0] && e.target.files[0].name) {
-      this.setState({ fileName: e.target.files[0].name }, () => { });
+      this.setState({ fileName: e.target.files[0].name }, () => {});
     }
-    this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name == 'search') {
+    this.setState({ [e.target.name]: e.target.value }, () => {});
+    if (e.target.name == "search") {
       this.setState({ page: 1 }, () => {
         this.getProduct();
       });
@@ -180,42 +188,56 @@ export default class Dashboard extends Component {
   addProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('file', fileInput.files[0]);
-    file.append('empId', this.state.empId);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("file", fileInput.files[0]);
+    file.append("empId", this.state.empId);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("address", this.state.address);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
     let validname = ValidateName(this.state.name);
     let validcontact = ValidateContact(this.state.contact);
     if (validname) {
       if (validcontact) {
-        
-          axios.post('http://localhost:2000/add-product', file, {
+        axios
+          .post("http://localhost:2000/add-product", file, {
             headers: {
-              'content-type': 'multipart/form-data',
-              'token': this.state.token
-            }
-          }).then((res) => {
+              "content-type": "multipart/form-data",
+              token: this.state.token,
+            },
+          })
+          .then((res) => {
             swal({
               text: "User added sucessfully",
               icon: "success",
               type: "success",
-              timer:3000
+              timer: 3000,
             });
             this.handleProductClose();
-            this.setState({ name: '',empId:'', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
-              this.getProduct();
-            });
-          }).catch((err) => {
+            this.setState(
+              {
+                name: "",
+                empId: "",
+                gender: "",
+                age: "",
+                address: "",
+                contact: "",
+                file: null,
+                page: 1,
+              },
+              () => {
+                this.getProduct();
+              }
+            );
+          })
+          .catch((err) => {
             console.log(err);
             swal({
               text: "Please enter pameters properly",
               icon: "error",
               type: "error",
-              timer:3000
+              timer: 3000,
             });
             this.handleProductClose();
           });
@@ -224,71 +246,82 @@ export default class Dashboard extends Component {
           text: "Number is not valid (Must be 10 Digit)",
           icon: "error",
           type: "error",
-          timer:3000
+          timer: 3000,
         });
-  
       }
     } else {
       swal({
         text: "Name is not valid",
         icon: "error",
         type: "error",
-        timer:3000
+        timer: 3000,
       });
     }
-  }
+  };
 
   updateProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('id', this.state.id);
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("id", this.state.id);
+    file.append("file", fileInput.files[0]);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("address", this.state.address);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
-    axios.post('http://localhost:2000/update-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-      swal({
-        text: "User details edited",
-        icon: "success",
-        type: "success",
-        timer:3000
-      });
+    axios
+      .post("http://localhost:2000/update-product", file, {
+        headers: {
+          "content-type": "multipart/form-data",
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        swal({
+          text: "User details edited",
+          icon: "success",
+          type: "success",
+          timer: 3000,
+        });
 
-      this.handleProductEditClose();
-      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null }, () => {
-        this.getProduct();
+        this.handleProductEditClose();
+        this.setState(
+          {
+            name: "",
+            gender: "",
+            age: "",
+            address: "",
+            contact: "",
+            file: null,
+          },
+          () => {
+            this.getProduct();
+          }
+        );
+      })
+      .catch((err) => {
+        swal({
+          text: "User is not edited",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
+        this.handleProductEditClose();
       });
-    }).catch((err) => {
-      swal({
-        text:"User is not edited",
-        icon: "error",
-        type: "error",
-        timer:3000
-      });
-      this.handleProductEditClose();
-    });
-
-  }
+  };
 
   handleProductOpen = () => {
     this.setState({
       openProductModal: true,
-      id: '',
-      empId:'',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      fileName: ''
+      id: "",
+      empId: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      address: "",
+      fileName: "",
     });
   };
 
@@ -305,7 +338,7 @@ export default class Dashboard extends Component {
       address: data.address,
       contact: data.contact,
       age: data.age,
-      fileName: data.image
+      fileName: data.image,
     });
   };
 
@@ -326,7 +359,7 @@ export default class Dashboard extends Component {
             size="small"
             onClick={this.handleProductOpen}
           >
-            Add Account 
+            Add Account
           </Button>
           <Button
             className="button_style"
@@ -349,9 +382,7 @@ export default class Dashboard extends Component {
         >
           <DialogTitle id="alert-dialog-title">Edit Account</DialogTitle>
           <DialogContent>
-
-            
-          <DialogTitle>Name</DialogTitle>
+            <DialogTitle>Name</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -363,40 +394,34 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
-           
-            
             <br />
             <DialogTitle>Gender</DialogTitle>
             <RadioGroup
-              aria-label="gender"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              row
-            >
-              <FormControlLabel
-                value="Female"
-                control={<Radio />}
-                label="Female"
-              />
-              <FormControlLabel value="Male" control={<Radio />} label="Male" />
-              <FormControlLabel
-                value="Other"
-                control={<Radio />}
-                label="Other"
-              />
-            </RadioGroup>
-            {/* <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              placeholder="Gender"
-              required
-              fullWidth
-            /> */}
+                aria-label="gender"
+                name="gender"
+                value={this.state.gender}
+                onChange={this.onChange}
+                row
+              >
+                <FormControlLabel
+                  value="Female"
+                  control={<Radio />}
+                  label="Female"
+                />
+                <FormControlLabel
+                  value="Male"
+                  control={<Radio />}
+                  label="Male"
+                />
+                <FormControlLabel
+                  value="Other"
+                  control={<Radio />}
+                  label="Other"
+                />
+              </RadioGroup>
+            <TextField id="standard-basic" fullWidth>
+              
+            </TextField>
             <br />
             <DialogTitle>Contact</DialogTitle>
             <TextField
@@ -423,7 +448,7 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
-             <DialogTitle>Address</DialogTitle>
+            <DialogTitle>Address</DialogTitle>
             <TextField
               id="standard-basic"
               type="text"
@@ -485,7 +510,9 @@ export default class Dashboard extends Component {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle id="alert-dialog-title" variant='h2'>Add Account</DialogTitle>
+          <DialogTitle id="alert-dialog-title" variant="h2">
+            Add Account
+          </DialogTitle>
           <DialogContent>
             <DialogTitle>Name</DialogTitle>
             <TextField
@@ -512,7 +539,7 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
-             <br />
+            <br />
             <DialogTitle>Gender</DialogTitle>
             <RadioGroup
               aria-label="gender"
@@ -570,9 +597,9 @@ export default class Dashboard extends Component {
               fullWidth
               required
             />
-             <br />
-             <DialogTitle>Address</DialogTitle>
-              <TextField
+            <br />
+            <DialogTitle>Address</DialogTitle>
+            <TextField
               id="standard-basic"
               type="text"
               autoComplete="off"
@@ -583,7 +610,6 @@ export default class Dashboard extends Component {
               required
               fullWidth
             />
-          
             <br />
             <br />
             <Button variant="contained" component="label">
@@ -631,7 +657,6 @@ export default class Dashboard extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
 
         <br />
 

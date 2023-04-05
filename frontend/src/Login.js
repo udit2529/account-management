@@ -34,7 +34,8 @@ export default class Login extends React.Component {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user_id", res.data.id);
-        this.props.history.push("/dashboard");
+        // this.props.history.push("/dashboard");
+        this.props.history.push('/menu');
       })
       .catch((err) => {
         if (

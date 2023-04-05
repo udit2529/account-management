@@ -37,8 +37,9 @@ export default class UserLogin extends React.Component {
         contact: this.state.contact,
       })
       .then((res) => {
+        // console.log(res.data);
         this.setState({
-          details: res.data.data,
+          details: res.data,
         });
 
         this.props.history.push({
@@ -106,7 +107,7 @@ export default class UserLogin extends React.Component {
                 variant="contained"
                 color="primary"
                 size="small"
-                disabled={this.state.empId == "" && this.state.contact == ""}
+                disabled={this.state.empId == "" || this.state.contact == ""}
                 onClick={this.userLogin}
               >
                 Login
