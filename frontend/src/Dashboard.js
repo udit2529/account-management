@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Button,
   TextField,
@@ -18,9 +18,16 @@ import {
   FormControlLabel,
   InputLabel,
 } from "@material-ui/core";
-import { Pagination } from '@material-ui/lab';
-import swal from 'sweetalert';
-const axios = require('axios');
+import Grid from "@material-ui/core/Grid";
+//import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+//import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+//import Button from "@material-ui/core/Button";
+import { Pagination } from "@material-ui/lab";
+import swal from "sweetalert";
+const axios = require("axios");
 
 function ValidateName(inputText) {
   var nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
@@ -49,128 +56,136 @@ function ValidateAge(inputText) {
 //   }
 // }
 
-function ValidateContact(inputText)
-{
+function ValidateContact(inputText) {
   var contactformat = /^\d{10}$/;
-  if(inputText.match(contactformat))
-        {
-      return true;
-        }
-      else
-        {
-        return false;
-        }
+  if (inputText.match(contactformat)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      token: '',
+      token: "",
       openProductModal: false,
       openProductEditModal: false,
-      id: '',
-      empId:'',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      file: '',
-      fileName: '',
+      id: "",
+      empId: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      address: "",
+      file: "",
+      fileName: "",
       page: 1,
-      search: '',
+      search: "",
       products: [],
       pages: 0,
-      loading: false
+      loading: false,
     };
   }
 
   componentDidMount = () => {
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push('/login');
+      this.props.history.push("/login");
     } else {
       this.setState({ token: token }, () => {
         this.getProduct();
       });
     }
-  }
+  };
 
   getProduct = () => {
-    
     this.setState({ loading: true });
 
-    let data = '?';
+    let data = "?";
     data = `${data}page=${this.state.page}`;
     if (this.state.search) {
       data = `${data}&search=${this.state.search}`;
     }
-    axios.get(`http://localhost:2000/get-product${data}`, {
-      headers: {
-        'token': this.state.token
-      }
-    }).then((res) => {
-      this.setState({ loading: false, 
-        products: res.data.products.sort((a,b)=> a.name.localeCompare(b.name)),
-         pages: res.data.pages });
-    }).catch((err) => {
-      swal({
-        text: "Please add user first",
-        icon: "error",
-        type: "error",
-        timer:3000
+    axios
+      .get(`http://localhost:2000/get-product${data}`, {
+        headers: {
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        this.setState({
+          loading: false,
+          products: res.data.products.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          ),
+          pages: res.data.pages,
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: "Please add user first",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
+        this.setState({ loading: false, products: [], pages: 0 }, () => {});
       });
-      this.setState({ loading: false, products: [], pages: 0 },()=>{});
-    });
-  }
+  };
 
   deleteProduct = (id) => {
-    axios.post('http://localhost:2000/delete-product', {
-      id: id
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'token': this.state.token
-      }
-    }).then((res) => {
+    axios
+      .post(
+        "http://localhost:2000/delete-product",
+        {
+          id: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: this.state.token,
+          },
+        }
+      )
+      .then((res) => {
+        swal({
+          text: "User deleted",
+          icon: "success",
+          type: "success",
+          timer: 3000,
+        });
 
-      swal({
-        text: "User deleted",
-        icon: "success",
-        type: "success",
-        timer:3000
+        this.setState({ page: 1 }, () => {
+          this.pageChange(null, 1);
+        });
+      })
+      .catch((err) => {
+        swal({
+          text: "User is not deleted",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
       });
-
-      this.setState({ page: 1 }, () => {
-        this.pageChange(null, 1);
-      });
-    }).catch((err) => {
-      swal({
-        text: "User is not deleted",
-        icon: "error",
-        type: "error",
-        timer:3000
-      });
-    });
-  }
+  };
 
   pageChange = (e, page) => {
     this.setState({ page: page }, () => {
       this.getProduct();
     });
-  }
+  };
 
   logOut = () => {
-    localStorage.setItem('token', null);
-    this.props.history.push('/');
-  }
+    localStorage.setItem("token", null);
+    this.props.history.push("/");
+  };
 
   onChange = (e) => {
     if (e.target.files && e.target.files[0] && e.target.files[0].name) {
-      this.setState({ fileName: e.target.files[0].name }, () => { });
+      this.setState({ fileName: e.target.files[0].name }, () => {});
     }
-    this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name == 'search') {
+    this.setState({ [e.target.name]: e.target.value }, () => {});
+    if (e.target.name == "search") {
       this.setState({ page: 1 }, () => {
         this.getProduct();
       });
@@ -180,42 +195,56 @@ export default class Dashboard extends Component {
   addProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('file', fileInput.files[0]);
-    file.append('empId', this.state.empId);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("file", fileInput.files[0]);
+    file.append("empId", this.state.empId);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("address", this.state.address);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
     let validname = ValidateName(this.state.name);
     let validcontact = ValidateContact(this.state.contact);
     if (validname) {
       if (validcontact) {
-        
-          axios.post('http://localhost:2000/add-product', file, {
+        axios
+          .post("http://localhost:2000/add-product", file, {
             headers: {
-              'content-type': 'multipart/form-data',
-              'token': this.state.token
-            }
-          }).then((res) => {
+              "content-type": "multipart/form-data",
+              token: this.state.token,
+            },
+          })
+          .then((res) => {
             swal({
               text: "User added sucessfully",
               icon: "success",
               type: "success",
-              timer:3000
+              timer: 3000,
             });
             this.handleProductClose();
-            this.setState({ name: '',empId:'', gender: '', age: '', address: '', contact: '', file: null, page: 1 }, () => {
-              this.getProduct();
-            });
-          }).catch((err) => {
+            this.setState(
+              {
+                name: "",
+                empId: "",
+                gender: "",
+                age: "",
+                address: "",
+                contact: "",
+                file: null,
+                page: 1,
+              },
+              () => {
+                this.getProduct();
+              }
+            );
+          })
+          .catch((err) => {
             console.log(err);
             swal({
               text: "Please enter pameters properly",
               icon: "error",
               type: "error",
-              timer:3000
+              timer: 3000,
             });
             this.handleProductClose();
           });
@@ -224,71 +253,82 @@ export default class Dashboard extends Component {
           text: "Number is not valid (Must be 10 Digit)",
           icon: "error",
           type: "error",
-          timer:3000
+          timer: 3000,
         });
-  
       }
     } else {
       swal({
         text: "Name is not valid",
         icon: "error",
         type: "error",
-        timer:3000
+        timer: 3000,
       });
     }
-  }
+  };
 
   updateProduct = () => {
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
-    file.append('id', this.state.id);
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('gender', this.state.gender);
-    file.append('address', this.state.address);
-    file.append('age', this.state.age);
-    file.append('contact', this.state.contact);
+    file.append("id", this.state.id);
+    file.append("file", fileInput.files[0]);
+    file.append("name", this.state.name);
+    file.append("gender", this.state.gender);
+    file.append("address", this.state.address);
+    file.append("age", this.state.age);
+    file.append("contact", this.state.contact);
 
-    axios.post('http://localhost:2000/update-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-      swal({
-        text: "User details edited",
-        icon: "success",
-        type: "success",
-        timer:3000
-      });
+    axios
+      .post("http://localhost:2000/update-product", file, {
+        headers: {
+          "content-type": "multipart/form-data",
+          token: this.state.token,
+        },
+      })
+      .then((res) => {
+        swal({
+          text: "User details edited",
+          icon: "success",
+          type: "success",
+          timer: 3000,
+        });
 
-      this.handleProductEditClose();
-      this.setState({ name: '', gender: '', age: '', address: '', contact: '', file: null }, () => {
-        this.getProduct();
+        this.handleProductEditClose();
+        this.setState(
+          {
+            name: "",
+            gender: "",
+            age: "",
+            address: "",
+            contact: "",
+            file: null,
+          },
+          () => {
+            this.getProduct();
+          }
+        );
+      })
+      .catch((err) => {
+        swal({
+          text: "User is not edited",
+          icon: "error",
+          type: "error",
+          timer: 3000,
+        });
+        this.handleProductEditClose();
       });
-    }).catch((err) => {
-      swal({
-        text:"User is not edited",
-        icon: "error",
-        type: "error",
-        timer:3000
-      });
-      this.handleProductEditClose();
-    });
-
-  }
+  };
 
   handleProductOpen = () => {
     this.setState({
       openProductModal: true,
-      id: '',
-      empId:'',
-      name: '',
-      gender: '',
-      contact: '',
-      age: '',
-      address: '',
-      fileName: ''
+      id: "",
+      empId: "",
+      name: "",
+      gender: "",
+      contact: "",
+      age: "",
+      address: "",
+      fileName: "",
     });
   };
 
@@ -305,7 +345,7 @@ export default class Dashboard extends Component {
       address: data.address,
       contact: data.contact,
       age: data.age,
-      fileName: data.image
+      fileName: data.image,
     });
   };
 
@@ -326,7 +366,7 @@ export default class Dashboard extends Component {
             size="small"
             onClick={this.handleProductOpen}
           >
-            Add Account 
+            Add User
           </Button>
           <Button
             className="button_style"
@@ -347,113 +387,115 @@ export default class Dashboard extends Component {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle id="alert-dialog-title">Edit Account</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Edit User</DialogTitle>
           <DialogContent>
+            
 
-            
-          <DialogTitle>Name</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="name"
-              value={this.state.name}
-              onChange={this.onChange}
-              placeholder="Name"
-              required
-              fullWidth
-            />
-           
-            
-            <br />
-            <DialogTitle>Gender</DialogTitle>
-            <RadioGroup
-              aria-label="gender"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              row
-            >
-              <FormControlLabel
-                value="Female"
-                control={<Radio />}
-                label="Female"
-              />
-              <FormControlLabel value="Male" control={<Radio />} label="Male" />
-              <FormControlLabel
-                value="Other"
-                control={<Radio />}
-                label="Other"
-              />
-            </RadioGroup>
-            {/* <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              placeholder="Gender"
-              required
-              fullWidth
-            /> */}
-            <br />
-            <DialogTitle>Contact</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="number"
-              autoComplete="off"
-              name="contact"
-              value={this.state.contact}
-              onChange={this.onChange}
-              placeholder="Contact"
-              required
-              fullWidth
-            />
-            <br />
-            <DialogTitle>Date of birth</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="date"
-              autoComplete="off"
-              name="age"
-              value={this.state.age}
-              onChange={this.onChange}
-              placeholder="Date of birth"
-              required
-              fullWidth
-            />
-             <DialogTitle>Address</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="address"
-              value={this.state.address}
-              onChange={this.onChange}
-              placeholder="Address"
-              required
-              fullWidth
-            />
-            <br />
-            <br />
-            <Button variant="contained" component="label">
-              {" "}
-              Upload Photo
-              <input
-                id="standard-basic"
-                type="file"
-                accept="image/*"
-                name="file"
-                value={this.state.file}
-                onChange={this.onChange}
-                id="fileInput"
-                placeholder="File"
-                hidden
-              />
-            </Button>
-            &nbsp;
-            {this.state.fileName}
+            <Grid container spacing={2} noValidate>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Name"
+                  type="text"
+                  autoComplete="off"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.onChange}
+                  placeholder="Name"
+                  margin="normal"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Address"
+                  type="text"
+                  autoComplete="off"
+                  name="address"
+                  value={this.state.address}
+                  onChange={this.onChange}
+                  placeholder="Address"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Date of Birth"
+                  type="date"
+                  autoComplete="off"
+                  name="age"
+                  value={this.state.age}
+                  onChange={this.onChange}
+                  placeholder="Date Of Birth"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Contact"
+                  type="number"
+                  autoComplete="off"
+                  name="contact"
+                  value={this.state.contact || ""}
+                  onChange={this.onChange}
+                  placeholder="Contact"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth required margin="normal">
+                  <InputLabel>Gender</InputLabel>
+                  <Select
+                    label="gender"
+                    value={this.state.gender}
+                    onChange={this.onChange}
+                    name="gender"
+                  >
+                    <MenuItem value={"Male"}>Male</MenuItem>
+                    <MenuItem value={"Female"}>Female</MenuItem>
+                    <MenuItem value={"Other"}>Other</MenuItem>
+                  </Select>
+                </FormControl>
+                <br></br>
+                </Grid>
+                <div
+              style={{ display: "flex", marginTop: 50,paddingLeft:"200px",paddingBlockEnd:"20px", justifyContent: "flex-start" }}
+                 > 
+                <Button variant="contained" component="label" margin="normal">
+                  {" "}
+                  Upload Photo
+                  <input
+                    fullWidth
+                    label="Photo"
+                    required
+                   
+                    id="standard-basic"
+                    type="file"
+                    accept="image/*"
+                    name="file"
+                    value={this.state.file}
+                    onChange={this.onChange}
+                    id="fileInput"
+                    placeholder="File"
+                    hidden
+                  />
+                </Button>
+                &nbsp;
+                {this.state.fileName}
+                </div>
+            </Grid>
           </DialogContent>
 
           <DialogActions>
@@ -465,13 +507,14 @@ export default class Dashboard extends Component {
                 this.state.name == "" ||
                 this.state.gender == "" ||
                 this.state.age == "" ||
-                this.state.contact == ""
+                this.state.contact == ""||
+                this.state.address==""
               }
               onClick={(e) => this.updateProduct()}
               color="primary"
               autoFocus
             >
-              Edit Account
+              Edit User
             </Button>
           </DialogActions>
         </Dialog>
@@ -485,129 +528,133 @@ export default class Dashboard extends Component {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle id="alert-dialog-title" variant='h2'>Add Account</DialogTitle>
+          <DialogTitle id="alert-dialog-title" variant="h2">
+            Add User
+          </DialogTitle>
           <DialogContent>
-            <DialogTitle>Name</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="name"
-              value={this.state.name}
-              onChange={this.onChange}
-              placeholder="Name"
-              fullWidth
-              required
-            />
-            <br />
-            <DialogTitle>Empolyee Id</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="number"
-              autoComplete="off"
-              name="empId"
-              value={this.state.empId}
-              onChange={this.onChange}
-              placeholder="Empolyee Id"
-              required
-              fullWidth
-            />
-             <br />
-            <DialogTitle>Gender</DialogTitle>
-            <RadioGroup
-              aria-label="gender"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              row
-            >
-              <FormControlLabel
-                value="Female"
-                control={<Radio />}
-                label="Female"
-              />
-              <FormControlLabel value="Male" control={<Radio />} label="Male" />
-              <FormControlLabel
-                value="Other"
-                control={<Radio />}
-                label="Other"
-              />
-            </RadioGroup>
-            {/* <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.onChange}
-              placeholder="Gender"
-              fullWidth
-              required
-            /> */}
-            <br />
-            <DialogTitle>Contact</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="number"
-              autoComplete="off"
-              name="contact"
-              value={this.state.contact}
-              onChange={this.onChange}
-              placeholder="Contact"
-              fullWidth
-              required
-            />
-            <br />
-            <DialogTitle>Date of birth</DialogTitle>
-            <TextField
-              id="standard-basic"
-              type="date"
-              autoComplete="off"
-              name="age"
-              value={this.state.age}
-              onChange={this.onChange}
-              placeholder="Age"
-              fullWidth
-              required
-            />
-             <br />
-             <DialogTitle>Address</DialogTitle>
-              <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="address"
-              value={this.state.address}
-              onChange={this.onChange}
-              placeholder="Address"
-              required
-              fullWidth
-            />
-          
-            <br />
-            <br />
-            <Button variant="contained" component="label">
-              {" "}
-              Upload Photo
-              <input
-                id="standard-basic"
-                type="file"
-                accept="image/*"
-                // inputProps={{
-                //   accept: "image/*"
-                // }}
-                name="file"
-                value={this.state.file}
-                onChange={this.onChange}
-                id="fileInput"
-                placeholder="File"
-                hidden
-                required
-              />
-            </Button>
-            &nbsp;
-            {this.state.fileName}
-          </DialogContent>
+          <Grid container spacing={2} noValidate>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Name"
+                  type="text"
+                  autoComplete="off"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.onChange}
+                  placeholder="Name"
+                  margin="normal"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Address"
+                  type="text"
+                  autoComplete="off"
+                  name="address"
+                  value={this.state.address}
+                  onChange={this.onChange}
+                  placeholder="Address"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Empolyee Id"
+                  type="number"
+                  autoComplete="off"
+                  name="empId"
+                  value={this.state.empId}
+                  onChange={this.onChange}
+                  placeholder="Employee Id"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  //label="Age"
+                  type="date"
+                  autoComplete="off"
+                  name="age"
+                  value={this.state.age || ""}
+                  onChange={this.onChange}
+                   placeholder="Date Of Birth"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Contact"
+                  type="number"
+                  autoComplete="off"
+                  name="contact"
+                  value={this.state.contact || ""}
+                  onChange={this.onChange}
+                  placeholder="Contact"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth required margin="normal">
+                  <InputLabel>Gender</InputLabel>
+                  <Select
+                    label="gender"
+                    value={this.state.gender}
+                    onChange={this.onChange}
+                    name="gender"
+                  >
+                    <MenuItem value={"Male"}>Male</MenuItem>
+                    <MenuItem value={"Female"}>Female</MenuItem>
+                    <MenuItem value={"Other"}>Other</MenuItem>
+                  </Select>
+                </FormControl>
+                <br></br>
+                </Grid>
+                <div
+             style={{ display: "flex", marginTop: 50,paddingLeft:"200px",paddingBlockEnd:"20px", justifyContent: "flex-start" }}
+             > 
+                <Button variant="contained" component="label" margin="normal">
+                  {" "}
+                  Upload Photo
+                  <input
+                    fullWidth
+                    label="Photo"
+                    required
+                   
+                    id="standard-basic"
+                    type="file"
+                    accept="image/*"
+                    name="file"
+                    value={this.state.file}
+                    onChange={this.onChange}
+                    id="fileInput"
+                    placeholder="File"
+                    hidden
+                  />
+                </Button>
+                &nbsp;
+                {this.state.fileName}
+                </div>
+            </Grid>
+             
+            
+          </ DialogContent >
 
           <DialogActions>
             <Button onClick={this.handleProductClose} color="primary">
@@ -627,14 +674,12 @@ export default class Dashboard extends Component {
               color="primary"
               autoFocus
             >
-              Add Account
+              Add User
             </Button>
           </DialogActions>
         </Dialog>
 
-
-        <br />
-
+    
         <TableContainer>
           <TextField
             id="standard-basic"

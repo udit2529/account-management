@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
+import { NavLink } from "react-router-dom";
 import { Button, TextField, Link } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import "./logi.css";
@@ -111,6 +112,20 @@ export default class Login extends React.Component {
                 onClick={this.login}
               >
                 Login
+              </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button
+                className="button_style"
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                <NavLink
+                to="/"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Home
+              </NavLink>
               </Button>
             </div>
             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}

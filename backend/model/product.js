@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+timestamps = require('mongoose-timestamp')
 var Schema = mongoose.Schema;
 
 productSchema = new Schema( {
@@ -12,6 +13,8 @@ productSchema = new Schema( {
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },
 	date : { type : Date, default: Date.now }
+},{
+	timestamps: true,
 }),
 product = mongoose.model('product', productSchema);
 

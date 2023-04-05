@@ -127,10 +127,10 @@ app.get("/", (req, res) => {
 });
 
 /* login api */
-app.post("/login", (req, res) => {
+app.post("/login", async(req, res) => {
   try {
     if (req.body && req.body.email && req.body.password) {
-      user.find({ email: req.body.email }, (err, data) => {
+     await user.find({ email: req.body.email }, (err, data) => {
         if (data.length > 0) {
           if (bcrypt.compareSync(data[0].password, req.body.password)) {
             checkUserAndGenerateToken(data[0], req, res);
@@ -179,7 +179,7 @@ app.post("/userLogin", async (req, res) => {
             .json({ success: false, message: "invalid credentials" });
         } else {
           console.log(prod,"aaaaaaaa");
-          res.status(200).json({ success: true, data: prod });
+          res.status(200).json(  prod );
         }    
       }
     } catch (error)
