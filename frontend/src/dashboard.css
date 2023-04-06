@@ -4,29 +4,41 @@ body{
     padding: 0;
     box-sizing: content-box;
 }
+.userpage{
+    margin-top: 4rem;
+}
+.dash{
+    position: relative;
+    left:-40%;
+}
 .udash{
-    display: flex;
-    width: 50%;
+    
+     /* width: 50%; */
     /* border: 1px solid black; */
-    margin: auto;
-    margin-top: 200px;
+    position: relative;
+    left: 41%;
+     /* margin: auto; */
+    /* margin-top: 20%;  */ 
 }
 img{
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     padding: 20px ;
+    border-radius: 50%;
+}
+.photosize{
+    width: 150px;
+    height: 150px;
+    padding: 20px ;
+    border-radius: 50%;
 }
 td{
     text-align: left;
+    padding-bottom: .4rem;
 }
 .lefttd{
     width: 9rem;
 }
 .righttd{
     width: 15rem;
-}
-.userprofile{
-    position: relative;
-    top:180px;
-    color: blue;
 }

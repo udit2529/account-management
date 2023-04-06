@@ -109,7 +109,7 @@ export default class Login extends React.Component {
                 variant="contained"
                 color="primary"
                 size="small"
-                disabled={this.state.email == "" && this.state.password == ""}
+                disabled={this.state.email == "" || this.state.password == ""}
                 onClick={this.login}
               >
                 Login
@@ -129,11 +129,7 @@ export default class Login extends React.Component {
               </NavLink>
               </Button>
             </div>
-            {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */}
-            {/* <br></br> */}
-            {/* <div className="reg">
-              <Link href="/register">Register</Link>
-            </div> */}
+           
           </div>
         </div>
       </div>

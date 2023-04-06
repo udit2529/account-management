@@ -354,69 +354,87 @@ export default class Dashboard extends Component {
       this.getProduct();
     });
   };
-   logOut = () => {
+  logOut = () => {
     localStorage.setItem("token", null);
     this.props.history.push("/");
   };
-  previousPage = () =>{
-    this.props.history.push('/log');
-  }
+  previousPage = () => {
+    this.props.history.push("/log");
+  };
   render() {
     return (
       <div>
-        <div className="menu">
-          <div className="menulink">
-          <Button
-            className="button_style"
-            variant="contained"
-            size="small"
-            onClick={this.logOut}
-          >
-            Home
-          </Button>
+        <div className="upperfix">
+          <div className="menu">
+            <div className="menulink">
+              <Button
+                className="button_style"
+                variant="contained"
+                size="small"
+                onClick={this.logOut}
+              >
+                Home
+              </Button>
+            </div>
+            <div className="menulink">
+              <Button
+                className="button_style"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={this.handleProductOpen}
+              >
+                Add Account
+              </Button>
+              <Button
+                className="button_style"
+                variant="contained"
+                size="small"
+                onClick={this.previousPage}
+              >
+                Log Out
+              </Button>
+            </div>
           </div>
-          <div className="menulink">
-          <Button
-            className="button_style"
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={this.handleProductOpen}
-          >
-            Add Account
-          </Button>
-          <Button
-            className="button_style"
-            variant="contained"
-            size="small"
-            onClick={this.previousPage}
-          >
-            Log Out
-          </Button>
+          <div>
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">
+                      <span style={{ fontSize: "large", fontWeight: "600" }}>
+                        Profile Photo
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span style={{ fontSize: "large", fontWeight: "600" }}>
+                        Name
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span style={{ fontSize: "large", fontWeight: "600" }}>
+                        Empolyee Id
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span style={{ fontSize: "large", fontWeight: "600" }}>
+                        Action
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span style={{ fontSize: "large", fontWeight: "600" }}>
+                        Delete
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+              </Table>
+            </TableContainer>
           </div>
         </div>
-        <div>
+        <div className="lowerpart">
           <TableContainer>
-            {/* <TextField
-              id="standard-basic"
-              type="search"
-              autoComplete="off"
-              name="search"
-              value={this.state.search}
-              onChange={this.onChange}
-              placeholder="Search by name"
-              required
-            /> */}
             <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Profile Photo</TableCell>
-                  <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Empolyee Id</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                  <TableCell align="center">Delete</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {this.state.products.map((row) => (
                   <TableRow key={row.name}>
@@ -425,10 +443,11 @@ export default class Dashboard extends Component {
                         src={`http://localhost:2000/${row.image}`}
                         width="70"
                         height="70"
+                        alt="profile pic"
                       />
                     </TableCell>
                     <TableCell align="center" component="th" scope="row">
-                      {row.name}
+                      {row.name.toUpperCase()}
                     </TableCell>
                     <TableCell align="center">{row.empId}</TableCell>
                     <TableCell align="center">
@@ -443,43 +462,38 @@ export default class Dashboard extends Component {
                             pathname: "/userfrommenu",
                             state: {
                               data: row,
-                              
                             },
                           });
-                        }}     
+                        }}
                       >
                         view Profile
                       </Button>
                       <Button
-                      className="button_style"
-                      variant="outlined"
-                      color="primary"
-                      size="small"
-                      onClick={(e) => this.handleProductEditOpen(row)}
-                    >
-                      Edit
-                    </Button>
-                   
-                     
+                        className="button_style"
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        onClick={(e) => this.handleProductEditOpen(row)}
+                      >
+                        Edit
+                      </Button>
                     </TableCell>
                     <TableCell align="center" component="th" scope="row">
-                    <Button
-                      className="button_style"
-                      variant="outlined"
-                      color="secondary"
-                      size="small"
-                      onClick={(e) => {
-                        let text = "Are you sure to delete the account !";
-                        
+                      <Button
+                        className="button_style"
+                        variant="outlined"
+                        color="secondary"
+                        size="small"
+                        onClick={(e) => {
+                          let text = "Are you sure to delete the account !";
+
                           if (window.confirm(text) == true) {
-                            this.deleteProduct(row._id)
-                          } 
-                        
-                       
-                      }}
-                    >
-                      Delete
-                    </Button>
+                            this.deleteProduct(row._id);
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -680,31 +694,25 @@ export default class Dashboard extends Component {
             <br />
             <DialogTitle>Gender</DialogTitle>
             <RadioGroup
-                aria-label="gender"
-                name="gender"
-                value={this.state.gender}
-                onChange={this.onChange}
-                row
-              >
-                <FormControlLabel
-                  value="Female"
-                  control={<Radio />}
-                  label="Female"
-                />
-                <FormControlLabel
-                  value="Male"
-                  control={<Radio />}
-                  label="Male"
-                />
-                <FormControlLabel
-                  value="Other"
-                  control={<Radio />}
-                  label="Other"
-                />
-              </RadioGroup>
-            <TextField id="standard-basic" fullWidth>
-              
-            </TextField>
+              aria-label="gender"
+              name="gender"
+              value={this.state.gender}
+              onChange={this.onChange}
+              row
+            >
+              <FormControlLabel
+                value="Female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="Other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+            <TextField id="standard-basic" fullWidth></TextField>
             <br />
             <DialogTitle>Contact</DialogTitle>
             <TextField
