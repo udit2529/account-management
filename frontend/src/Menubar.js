@@ -1,4 +1,12 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
+import "./menubar.css"
+import Grid from "@material-ui/core/Grid";
+
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
+import MenuItem from "@material-ui/core/MenuItem";
 import {
   Button,
   TextField,
@@ -18,13 +26,6 @@ import {
   FormControlLabel,
   InputLabel,
 } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-
-import MenuItem from "@material-ui/core/MenuItem";
-
 import { Pagination } from "@material-ui/lab";
 import swal from "sweetalert";
 const axios = require("axios");
@@ -353,12 +354,33 @@ export default class Dashboard extends Component {
     this.setState({ openProductEditModal: false });
   };
 
+  pageChange = (e, page) => {
+    this.setState({ page: page }, () => {
+      this.getProduct();
+    });
+  };
+   logOut = () => {
+    localStorage.setItem("token", null);
+    this.props.history.push("/");
+  };
+  previousPage = () =>{
+    this.props.history.push('/log');
+  }
   render() {
     return (
       <div>
-        {this.state.loading && <LinearProgress size={40} />}
-        <div>
-          <h2>Dashboard</h2>
+        <div className="menu">
+          <div className="menulink">
+          <Button
+            className="button_style"
+            variant="contained"
+            size="small"
+            onClick={this.logOut}
+          >
+            Home
+          </Button>
+          </div>
+          <div className="menulink">
           <Button
             className="button_style"
             variant="contained"
@@ -366,160 +388,120 @@ export default class Dashboard extends Component {
             size="small"
             onClick={this.handleProductOpen}
           >
-            Add User
+            Add Account
           </Button>
           <Button
             className="button_style"
             variant="contained"
             size="small"
-            onClick={this.logOut}
+            onClick={this.previousPage}
           >
             Log Out
           </Button>
+          </div>
+        </div>
+        <div>
+          <TableContainer>
+            {/* <TextField
+              id="standard-basic"
+              type="search"
+              autoComplete="off"
+              name="search"
+              value={this.state.search}
+              onChange={this.onChange}
+              placeholder="Search by name"
+              required
+            /> */}
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Profile Photo</TableCell>
+                  <TableCell align="center">Name</TableCell>
+                  <TableCell align="center">Empolyee Id</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                  <TableCell align="center">Delete</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.products.map((row) => (
+                  <TableRow key={row.name}>
+                    <TableCell align="center">
+                      <img
+                        src={`http://localhost:2000/${row.image}`}
+                        width="70"
+                        height="70"
+                      />
+                    </TableCell>
+                    <TableCell align="center" component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell align="center">{row.empId}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        className="button_style"
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        onClick={(e) => {
+                          console.log(row);
+                          this.props.history.push({
+                            pathname: "/userfrommenu",
+                            state: {
+                              data: row,
+                              
+                            },
+                          });
+                        }}     
+                      >
+                        view Profile
+                      </Button>
+                      <Button
+                      className="button_style"
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      onClick={(e) => this.handleProductEditOpen(row)}
+                    >
+                      Edit
+                    </Button>
+                   
+                     
+                    </TableCell>
+                    <TableCell align="center" component="th" scope="row">
+                    <Button
+                      className="button_style"
+                      variant="outlined"
+                      color="secondary"
+                      size="small"
+                      onClick={(e) => {
+                        let text = "Are you sure to delete the account !";
+                        
+                          if (window.confirm(text) == true) {
+                            this.deleteProduct(row._id)
+                          } 
+                        
+                       
+                      }}
+                    >
+                      Delete
+                    </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <br />
+            <Pagination
+              count={this.state.pages}
+              page={this.state.page}
+              onChange={this.pageChange}
+              color="primary"
+            />
+          </TableContainer>
         </div>
 
-        {/* Edit Product */}
-        <Dialog
-          open={this.state.openProductEditModal}
-          onClose={this.handleProductClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          fullWidth
-          maxWidth="sm"
-        >
-          <DialogTitle id="alert-dialog-title">Edit User</DialogTitle>
-          <DialogContent>
-            
+        {/* add product */}
 
-            <Grid container spacing={2} noValidate>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="standard-basic"
-                  label="Name"
-                  type="text"
-                  autoComplete="off"
-                  name="name"
-                  value={this.state.name}
-                  onChange={this.onChange}
-                  placeholder="Name"
-                  margin="normal"
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="standard-basic"
-                  label="Address"
-                  type="text"
-                  autoComplete="off"
-                  name="address"
-                  value={this.state.address}
-                  onChange={this.onChange}
-                  placeholder="Address"
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="standard-basic"
-                  label="Date of Birth"
-                  type="date"
-                  autoComplete="off"
-                  name="age"
-                  value={this.state.age}
-                  onChange={this.onChange}
-                  placeholder="Date Of Birth"
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="standard-basic"
-                  label="Contact"
-                  type="number"
-                  autoComplete="off"
-                  name="contact"
-                  value={this.state.contact || ""}
-                  onChange={this.onChange}
-                  placeholder="Contact"
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth required margin="normal">
-                  <InputLabel>Gender</InputLabel>
-                  <Select
-                    label="gender"
-                    value={this.state.gender}
-                    onChange={this.onChange}
-                    name="gender"
-                  >
-                    <MenuItem value={"Male"}>Male</MenuItem>
-                    <MenuItem value={"Female"}>Female</MenuItem>
-                    <MenuItem value={"Other"}>Other</MenuItem>
-                  </Select>
-                </FormControl>
-                <br></br>
-                </Grid>
-                <div
-              style={{ display: "flex", marginTop: 50,paddingLeft:"200px",paddingBlockEnd:"20px", justifyContent: "flex-start" }}
-                 > 
-                <Button variant="contained" component="label" margin="normal">
-                  {" "}
-                  Upload Photo
-                  <input
-                    fullWidth
-                    label="Photo"
-                    required
-                   
-                    id="standard-basic"
-                    type="file"
-                    accept="image/*"
-                    name="file"
-                    value={this.state.file}
-                    onChange={this.onChange}
-                    id="fileInput"
-                    placeholder="File"
-                    hidden
-                  />
-                </Button>
-                &nbsp;
-                {this.state.fileName}
-                </div>
-            </Grid>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={this.handleProductEditClose} color="primary">
-              Cancel
-            </Button>
-            <Button
-              disabled={
-                this.state.name == "" ||
-                this.state.gender == "" ||
-                this.state.age == "" ||
-                this.state.contact == ""||
-                this.state.address==""
-              }
-              onClick={(e) => this.updateProduct()}
-              color="primary"
-              autoFocus
-            >
-              Edit User
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Add Product */}
         <Dialog
           open={this.state.openProductModal}
           onClose={this.handleProductClose}
@@ -679,81 +661,147 @@ export default class Dashboard extends Component {
           </DialogActions>
         </Dialog>
 
-    
-        <TableContainer>
-          <TextField
-            id="standard-basic"
-            type="search"
-            autoComplete="off"
-            name="search"
-            value={this.state.search}
-            onChange={this.onChange}
-            placeholder="Search by name"
-            required
-          />
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Image</TableCell>
-                <TableCell align="center">Empolyee Id</TableCell>
-                <TableCell align="center">Gender</TableCell>
-                <TableCell align="center">Contact</TableCell>
-                <TableCell align="center">DOB</TableCell>
-                <TableCell align="center">Address</TableCell>
-                <TableCell align="center">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.products.map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell align="center" component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="center">
-                    <img
-                      src={`http://localhost:2000/${row.image}`}
-                      width="70"
-                      height="70"
-                    />
-                  </TableCell>
-                  <TableCell align="center">{row.empId}</TableCell>
-                  <TableCell align="center">{row.gender}</TableCell>
-                  <TableCell align="center">{row.contact}</TableCell>
-                  <TableCell align="center">{row.age}</TableCell>
-                  <TableCell align="center">{row.address}</TableCell>
-                  <TableCell align="center">
-                    <Button
-                      className="button_style"
-                      variant="outlined"
-                      color="primary"
-                      size="small"
-                      onClick={(e) => this.handleProductEditOpen(row)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      className="button_style"
-                      variant="outlined"
-                      color="secondary"
-                      size="small"
-                      onClick={(e) => this.deleteProduct(row._id)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <br />
-          <Pagination
-            count={this.state.pages}
-            page={this.state.page}
-            onChange={this.pageChange}
-            color="primary"
-          />
-        </TableContainer>
+
+        {/* Edit Product */}
+        <Dialog
+          open={this.state.openProductEditModal}
+          onClose={this.handleProductClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle id="alert-dialog-title">Edit User</DialogTitle>
+          <DialogContent>
+            
+
+            <Grid container spacing={2} noValidate>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Name"
+                  type="text"
+                  autoComplete="off"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.onChange}
+                  placeholder="Name"
+                  margin="normal"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Address"
+                  type="text"
+                  autoComplete="off"
+                  name="address"
+                  value={this.state.address}
+                  onChange={this.onChange}
+                  placeholder="Address"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Date of Birth"
+                  type="date"
+                  autoComplete="off"
+                  name="age"
+                  value={this.state.age}
+                  onChange={this.onChange}
+                  placeholder="Date Of Birth"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="standard-basic"
+                  label="Contact"
+                  type="number"
+                  autoComplete="off"
+                  name="contact"
+                  value={this.state.contact || ""}
+                  onChange={this.onChange}
+                  placeholder="Contact"
+                  required
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth required margin="normal">
+                  <InputLabel>Gender</InputLabel>
+                  <Select
+                    label="gender"
+                    value={this.state.gender}
+                    onChange={this.onChange}
+                    name="gender"
+                  >
+                    <MenuItem value={"Male"}>Male</MenuItem>
+                    <MenuItem value={"Female"}>Female</MenuItem>
+                    <MenuItem value={"Other"}>Other</MenuItem>
+                  </Select>
+                </FormControl>
+                <br></br>
+                </Grid>
+                <div
+              style={{ display: "flex", marginTop: 50,paddingLeft:"200px",paddingBlockEnd:"20px", justifyContent: "flex-start" }}
+                 > 
+                <Button variant="contained" component="label" margin="normal">
+                  {" "}
+                  Upload Photo
+                  <input
+                    fullWidth
+                    label="Photo"
+                    required
+                   
+                    id="standard-basic"
+                    type="file"
+                    accept="image/*"
+                    name="file"
+                    value={this.state.file}
+                    onChange={this.onChange}
+                    id="fileInput"
+                    placeholder="File"
+                    hidden
+                  />
+                </Button>
+                &nbsp;
+                {this.state.fileName}
+                </div>
+            </Grid>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={this.handleProductEditClose} color="primary">
+              Cancel
+            </Button>
+            <Button
+              disabled={
+                this.state.name == "" ||
+                this.state.gender == "" ||
+                this.state.age == "" ||
+                this.state.contact == ""||
+                this.state.address==""
+              }
+              onClick={(e) => this.updateProduct()}
+              color="primary"
+              autoFocus
+            >
+              Edit User
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

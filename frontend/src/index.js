@@ -10,8 +10,8 @@ import UserLogin from './Userlogin';
 import './Login.css';
 import CheckPage from './CheckPage';
 import UserDashboard from './UserDashboard';
-
-
+import UserFromMenu from './UserFormMenu';
+import Menubar from "./Menubar"
 ReactDOM.render(
     <BrowserRouter>
      {/* <UserDashboard/> */}
@@ -19,10 +19,12 @@ ReactDOM.render(
             
             <Route exact path='/' component={CheckPage} />
             <Route exact path='/log' component={Login} />
-            {/* //<Route exact path='/register' component={Register} /> */}
+            <Route exact path='/register' component={Register} /> 
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/userlogin' component={UserLogin} />
+            <Route path='/menu' component={Menubar} />
             <Route exact path='/userdashboard' component={UserDashboard} />
+            <Route path="/userfrommenu" component={UserFromMenu}/>
                 </Switch>
     </BrowserRouter>,
     document.getElementById('root')

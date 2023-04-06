@@ -67,7 +67,7 @@ app.use("/", (req, res, next) => {
           next();
         } else {
           return res.status(401).json({
-            errorMessage: "User unauzed!",
+            errorMessage: "User unauthorised!",
             status: false,
           });
         }
@@ -81,43 +81,7 @@ app.use("/", (req, res, next) => {
   }
 });
 
-// app.use("/userLogin",async (req, res,next) => {
-//   console.log(req.body.empId)
 
-//       try {
-//         const user = await product.findOne({empId:req.body.empId});
-//         if(!user)
-//         {
-//           res.status(404).json({success:false,message:"Not found"})
-//           next();
-//         }
-//         else{
-//           console.log(user);
-//           res.status(200).send("user middleware");
-//           next();
-
-//         }
-//       } catch (error) {
-//         res.status(500).json({success:false,message:"Server Error"})
-//         next();
-
-//       }
-// try {
-//   if (req.path == "/userLogin") {
-//     next();
-//   } else {
-//     return res.status(401).json({
-//       errorMessage: "User unauthorized!",
-//       status: false,
-//     });
-//   }
-// } catch (e) {
-//   res.status(400).json({
-//     errorMessage: "Something went wrong!",
-//     status: false,
-//   });
-// }
-// });
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -187,39 +151,7 @@ app.post("/userLogin", async (req, res) => {
       res.status(500).send("Internal Server Error")
     }
 });
-    // if (req.body && req.body.empId && req.body.contact) {
-    //   product.findOne({ empId: req.body.empId }, (err, data) => {
-    //     if (data.length > 0) {
-    //       const con = data.contact;
-    //       if (req.body.contact === con) {
-    //         res.status(200).json({
-    //           status: true,
-    //           title: "Login successfully.",
-    //         });
-    //       } else {
-    //         res.status(400).json({
-    //           errorMessage: "Enter Correct Contact!",
-    //           status: false,
-    //         });
-    //       }
-    //     } else {
-    //       res.status(400).json({
-    //         errorMessage: "Enter Correct Empolyee Id!",
-    //         status: false,
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   res.status(400).json({
-    //     errorMessage: "Add proper parameter first!",
-    //     status: false,
-    //   });
-    // }
-  // } catch (e) {
-  //   res.status(400).json({
-  //     errorMessage: "Something went wrong!",
-  //     status: false,
-  //   });
+    
 
 
 /* register api */
