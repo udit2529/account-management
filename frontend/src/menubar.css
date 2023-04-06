@@ -1,0 +1,24 @@
+.menu{ 
+    /* position:fixed;
+    top:0px; */
+    display: flex;
+    justify-content: space-between;
+    background-color: blue;
+    height: 5rem;
+    /* width: 100vw; */
+    
+}
+.menulink{
+    color:white;
+    line-height: 5rem;
+    margin: 0 3rem ;
+}
+.upperfix{
+    position:fixed;
+    top:0px;
+    width: 100vw;
+    /* margin-bottom: 4rem; */
+}
+.lowerpart{
+    margin-top: 7rem;
+}
