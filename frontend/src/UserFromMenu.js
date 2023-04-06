@@ -19,7 +19,7 @@ import {  Button,
 import "./dashboard.css";
 import { NavLink } from "react-router-dom";
 
-export default class UserDashboard extends Component {
+export default class UserFromMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -107,7 +107,7 @@ export default class UserDashboard extends Component {
                       // onClick={this.homepage}
                     >
                       <NavLink
-                        to="/"
+                        to="/menu"
                         style={{ color: "white", textDecoration: "none" }}
                       >
                         Home

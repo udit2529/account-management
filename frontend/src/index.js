@@ -10,9 +10,9 @@ import UserLogin from './Userlogin';
 import './Login.css';
 import CheckPage from './CheckPage';
 import UserDashboard from './UserDashboard';
-import AdminDash from './AdminDash';
 import Menubar from './Menubar';
 import AddAccount from './AddAccount';
+import UserFromMenu from './UserFromMenu';
 
 
 ReactDOM.render(
@@ -28,6 +28,7 @@ ReactDOM.render(
             <Route exact path='/userdashboard' component={UserDashboard} />
             <Route  path='/menu' component={Menubar} />
             <Route path="/addaccount" component={AddAccount} />
+            <Route path="/userfrommenu" component={UserFromMenu}/>
              
         </Switch>
     </BrowserRouter>,
