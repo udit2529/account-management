@@ -1,0 +1,32 @@
+body{
+    background-color: azure;
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+.udash{
+    display: flex;
+    width: 50%;
+    /* border: 1px solid black; */
+    margin: auto;
+    margin-top: 200px;
+}
+img{
+    width: 100px;
+    height: 100px;
+    padding: 20px ;
+}
+td{
+    text-align: left;
+}
+.lefttd{
+    width: 9rem;
+}
+.righttd{
+    width: 15rem;
+}
+.userprofile{
+    position: relative;
+    top:180px;
+    color: blue;
+}

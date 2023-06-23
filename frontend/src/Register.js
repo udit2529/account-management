@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
 import { Button, TextField, Link } from "@material-ui/core";
+
+//import { Alert } from 'antd';
+import Password from "./Password";
 const axios = require("axios");
 
 function ValidateEmail(inputText) {
@@ -13,10 +16,22 @@ function ValidateEmail(inputText) {
 }
 
 function ValidateName(inputText) {
-  var Nameformat = /^[[A-Z]|[a-z]][[A-Z]|[a-z]|\\d|[_]]{3,29}$/;
-  if (inputText.match(Nameformat)) {
+
+  if (!inputText) {
+    console.log("1"+inputText);
+    return false;
+  } else if (inputText.includes(" ")) {
+    console.log("2"+inputText);
+    return false;
+  }
+
+ let Nameformat = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  console.log(!Nameformat.test(inputText))
+  if (!Nameformat.test(inputText) &&  inputText.length>=1) {
+    console.log("3"+inputText);
     return true;
   } else {
+    console.log("4"+inputText);
     return false;
   }
 }
@@ -36,8 +51,8 @@ export default class Register extends React.Component {
     this.state = {
       email: "",
       username: "",
-      password: "",
-      confirm_password: "",
+      password: ""
+      // confirm_password: "",
     };
   }
 
@@ -64,12 +79,12 @@ export default class Register extends React.Component {
               type: "success",
               timer: 3000,
             });
-            this.props.history.push("/");
+            this.props.history.push("/log");
           })
           .catch((err) => {
             console.log(err);
             swal({
-              text: "User already exist",
+              text: "User or email already exist",
               icon: "error",
               type: "error",
               timer: 3000,
@@ -108,12 +123,16 @@ export default class Register extends React.Component {
   render() {
     return (
       <div style={{ marginTop: "200px" }}>
+        {/* <div style={{display:"flex", justifyContent:"center"}}><Alert severity="info">Use email : superadmin@sabil.com / password : sabil@1234/ User Name : sabil </Alert></div> */}
+        
+        {/* //<Alert message="This is a Info Alert" type="info" /> */}
         <div>
           <h2>Register</h2>
         </div>
 
         <div>
-          <TextField
+       
+        <TextField
             id="standard-basic"
             type="text"
             autoComplete="off"
@@ -123,6 +142,8 @@ export default class Register extends React.Component {
             placeholder="Email"
             required
           />
+       
+          
           <br /> <br />
           <TextField
             id="standard-basic"
@@ -148,6 +169,8 @@ export default class Register extends React.Component {
           />
           <br />
           <br />
+          
+
           {/* <TextField
             id="standard-basic"
             type="password"
@@ -158,9 +181,10 @@ export default class Register extends React.Component {
             placeholder="Confirm Password"
             required
           /> */}
-          <br />
+ 
           <br />
           <Button
+          
             className="button_style"
             variant="contained"
             color="primary"
@@ -168,15 +192,16 @@ export default class Register extends React.Component {
             disabled={
               this.state.username === "" ||
               this.state.password === "" ||
-              this.state.email === "" ||
-              this.state.confirm_password === ""
+              this.state.email === "" 
+              // ||
+              // this.state.confirm_password === ""
             }
             onClick={this.register}
           >
             Register
           </Button>{" "}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Link href="/">Login</Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link href="/log">Login</Link>
         </div>
       </div>
     );
